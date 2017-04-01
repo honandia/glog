@@ -26,6 +26,18 @@
    		android:icon="@drawable/ic_menu_add"/>
     
     <item
+        android:id="@+id/menu_view"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_settings"
+   		android:icon="@drawable/ic_menu_view"/>
+    
+    <item
+        android:id="@+id/menu_refresh"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_settings"
+   		android:icon="@drawable/ic_menu_refresh"/>
+    
+    <item
         android:id="@+id/menu_remid"
         sgoliver:showAsAction="always"
         android:title="@string/action_remind"
