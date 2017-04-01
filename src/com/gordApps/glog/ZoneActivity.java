@@ -119,7 +119,8 @@ public class ZoneActivity extends ActionBarActivity {
 		
 		nameZoneLog = (TextView) findViewById(R.id.nameZoneLog);
 		
-	//	nameZoneLog.setText(nameZone);
+
+		nameZoneLog.setText(nameZone);
 		
 		//nameZoneLog.setText((CharSequence) nameZoneLog);
 		

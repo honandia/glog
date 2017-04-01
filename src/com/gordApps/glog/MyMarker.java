@@ -2,10 +2,6 @@ package com.gordApps.glog;
 
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.views.MapView;
-
-import org.osmdroid.tileprovider.*;
-
-import android.content.Context;
 import android.content.Intent;
 import android.view.MotionEvent;
 
@@ -34,6 +30,11 @@ public class MyMarker extends Marker{
 		
 		return super.onLongPress(event, mapView);
 	}
+	
+	
+	
+	
+	
 	
 
 }
