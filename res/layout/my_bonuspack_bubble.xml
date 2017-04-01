@@ -52,7 +52,7 @@
 			android:text="Description" />
 		
 		<TableLayout
-		    android:id="@+id/TableLayout1"
+		    android:id="@+id/tableCommentLayout"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content" >
 		

@@ -23,7 +23,11 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar.Tab;
+import android.support.v7.app.ActionBar.TabListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -37,6 +41,8 @@ public class CreateZoneActivity extends ActionBarActivity {
 	
 	Zone newZone;
 	EditText name,desc;
+	
+	ActionBar actionBar;
 	
 	
 	
@@ -58,6 +64,20 @@ public class CreateZoneActivity extends ActionBarActivity {
 		newZone.setLastCommentText("");
 		newZone.setLastCommentUser_id("");
 		
+		actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setTitle("Crear nuevo gLog");
+		
+		
+		//cancelar
+		/**CREAR TABS**/
+    /*    Tab tabCancelar = actionBar.newTab()
+                    .setText("Cancelar");
+        actionBar.addTab(tabCancelar);
+        
+        Tab tabAceptar = actionBar.newTab()
+                .setText("Aceptar");
+        actionBar.addTab(tabAceptar);*/
 		
 		
 		

@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 
 public class MyMarker extends Marker{
 	
-	//public static String nick;
 
 	public MyMarker(MapView mapView) {
 		super(mapView);
@@ -27,11 +26,8 @@ public class MyMarker extends Marker{
 		Zone zone = (Zone) this.getRelatedObject();
 		
 		//pasamos el ID y el nombre de la zona qu vamos a consultar
-		
 		intent.putExtra("ZONE_ID", zone._id);
 		intent.putExtra("ZONE_NAME", zone.name);
-		
-		//intent.putExtra("USER_NICK", nick);
 	
 		mapView.getContext().startActivity(intent);
 		

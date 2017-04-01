@@ -47,7 +47,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract.CommonDataKinds.Nickname;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -98,7 +97,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     private int zonesInArea;
     private int zoneIndex;
     
-    private String userNick;
+    
     /*GeoPoint ptII;
     GeoPoint ptIS;
     GeoPoint ptDI;
@@ -123,14 +122,13 @@ public class ActivityPrincipal extends ActionBarActivity {
     	myOpenMapView.getOverlays().clear();
     	//Centre map
         mapController.setCenter(point);	
-        //limitar el panning
-        myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
-        
+	      
         //alcance 
         myArea = new Area(ALCANCE, point);        
         myArea.draw(myOpenMapView, Color.GREEN, this); 
      
-        
+        //limitar el panning
+        //myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
     
         zoneIndex=0;//inicializamos 
         zonesInArea=0;
@@ -141,14 +139,11 @@ public class ActivityPrincipal extends ActionBarActivity {
 	    
 	    //marcador de inicio
         startMarker = new Marker(myOpenMapView);
-        
-        
-        
         startMarker.setPosition(point);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
                    
         startMarker.setIcon(getResources().getDrawable(R.drawable.emo_im_happy));
-        startMarker.setTitle("Bienvenido a gLog "+userNick+" !!");//+"Estas aqui!");
+        startMarker.setTitle("Estas aqui!");
         
         myOpenMapView.getOverlays().add(startMarker);
            
@@ -173,11 +168,10 @@ public class ActivityPrincipal extends ActionBarActivity {
         			
         			Intent intent = new Intent(myOpenMapView.getContext(),CreateZoneActivity.class);	
         			
-        			//pasamos el ID y el nombre de la zona qu vamos a consultar y nick de usuario
+        			//pasamos el ID y el nombre de la zona qu vamos a consultar
         			intent.putExtra("LATITUDE_NEW_ZONE", newZoneMarker.getPosition().getLatitude());
         			intent.putExtra("LONGITUDE_NEW_ZONE", newZoneMarker.getPosition().getLongitude());
-        			//intent.putExtra("USER_NICK", userNick);
-        			
+        		
         			myOpenMapView.getContext().startActivity(intent);
 		
         		}
@@ -228,11 +222,12 @@ public class ActivityPrincipal extends ActionBarActivity {
     	 super.onCreate(savedInstanceState);
          setContentView(R.layout.activity_principal);
     	
-       //obtenemos el nick del usuario logeado
- 		
- 	//	Bundle bundle = getIntent().getExtras();
- 	//	userNick= bundle.getString("USER_NICK");
- 		
+         
+         //**********************************************
+         // cargar usuario guardado en sqlite, si no existe
+         // pedir datos pa la creacion de un nuevo usuario
+         // Cargar fragment de login o de registro
+         //**********************************************
          
          
          //obtener el telefono
@@ -252,29 +247,38 @@ public class ActivityPrincipal extends ActionBarActivity {
         mUpdateHandler = new OsmGeoUpdateHandler(this);
         Location location = null;
 
-       /* for (String provider : locationManager.getProviders(true))
+   /*     float precision =100;
+        int precisionMinimaRequerida=10;//metros
+        while (location == null && (precision>=precisionMinimaRequerida))
         {
         	
-            location = locationManager.getLastKnownLocation(provider);
-            if (location != null)
-            {
-                //location.setLatitude(MAP_DEFAULT_LATITUDE);
-                //location.setLongitude(MAP_DEFAULT_LONGITUDE);
-                locationManager.requestLocationUpdates(provider, 1000, 0, mUpdateHandler);
-                break;
-            }
+	        for (String provider : locationManager.getProviders(true))
+	        {
+	        	
+	            location = locationManager.getLastKnownLocation(provider);
+	            precision=location.getAccuracy();
+	            if (location != null)
+	            {
+	                //location.setLatitude(MAP_DEFAULT_LATITUDE);
+	                //location.setLongitude(MAP_DEFAULT_LONGITUDE);
+	                locationManager.requestLocationUpdates(provider, 1000, 0, mUpdateHandler);
+	                break;
+	            }
+	        }
         }*/
         
         // solo para provider = GPS
         
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
-        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        
-        startPoint = new GeoPoint(43.38110, -3.21863);
+      //  while (location == null)
+     //   {
+     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
+     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //}
+        startPoint = new GeoPoint(45.38110, -3.21863);
                
-        if(location != null){
-              	 startPoint = new GeoPoint(location);
-               }
+     //   if(location != null){
+     //         	 startPoint = new GeoPoint(location);
+   //            }
                
 		//Dibujar
         myOpenMapView = (MapView)findViewById(R.id.mapView);
@@ -284,11 +288,10 @@ public class ActivityPrincipal extends ActionBarActivity {
 		mapController = (MapController) myOpenMapView.getController();
 		mapController.setZoom(18);
         
-		//Centre map
-    //    mapController.setCenter(startPoint);	
-        //limitar el panning
-    //    myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
-        
+		
+		mapController.setCenter(startPoint);
+		//limitar el panning
+        myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
     	updateAreaPosition(startPoint);
     	
 	 	     
@@ -369,6 +372,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     	        	//Habria que volver a calcular el startPoint
     	        	updateAreaPosition(startPoint);
     	        	break;
+    	        	
     	        case R.id.menu_remid://acceder a comentarios archivados
     	            Toast.makeText(this, "Archivados", Toast.LENGTH_SHORT).show();
     	            break;
@@ -523,10 +527,7 @@ public class ActivityPrincipal extends ActionBarActivity {
    	        	markerArray = new ArrayList<Marker>();
    	        	
    	        	//OverlayItem olItem;
-   	        	MyMarker marker ;
-   	        	
-   	        	//MyMarker.nick = userNick;
-   	        	
+   	        	MyMarker marker;
    	        	//TextView bubbleDesc;
    	        	
    	        	zonesInArea = alZones.size();
