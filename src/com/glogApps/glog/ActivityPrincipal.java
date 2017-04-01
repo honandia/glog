@@ -47,6 +47,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract.CommonDataKinds.Nickname;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -97,7 +98,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     private int zonesInArea;
     private int zoneIndex;
     
-    
+    private String userNick;
     /*GeoPoint ptII;
     GeoPoint ptIS;
     GeoPoint ptDI;
@@ -122,13 +123,14 @@ public class ActivityPrincipal extends ActionBarActivity {
     	myOpenMapView.getOverlays().clear();
     	//Centre map
         mapController.setCenter(point);	
-	      
+        //limitar el panning
+        myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
+        
         //alcance 
         myArea = new Area(ALCANCE, point);        
         myArea.draw(myOpenMapView, Color.GREEN, this); 
      
-        //limitar el panning
-        myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
+        
     
         zoneIndex=0;//inicializamos 
         zonesInArea=0;
@@ -139,11 +141,14 @@ public class ActivityPrincipal extends ActionBarActivity {
 	    
 	    //marcador de inicio
         startMarker = new Marker(myOpenMapView);
+        
+        
+        
         startMarker.setPosition(point);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
                    
         startMarker.setIcon(getResources().getDrawable(R.drawable.emo_im_happy));
-        startMarker.setTitle("Estas aqui!");
+        startMarker.setTitle("Bienvenido a gLog "+userNick+" !!");//+"Estas aqui!");
         
         myOpenMapView.getOverlays().add(startMarker);
            
@@ -168,10 +173,11 @@ public class ActivityPrincipal extends ActionBarActivity {
         			
         			Intent intent = new Intent(myOpenMapView.getContext(),CreateZoneActivity.class);	
         			
-        			//pasamos el ID y el nombre de la zona qu vamos a consultar
+        			//pasamos el ID y el nombre de la zona qu vamos a consultar y nick de usuario
         			intent.putExtra("LATITUDE_NEW_ZONE", newZoneMarker.getPosition().getLatitude());
         			intent.putExtra("LONGITUDE_NEW_ZONE", newZoneMarker.getPosition().getLongitude());
-        		
+        			//intent.putExtra("USER_NICK", userNick);
+        			
         			myOpenMapView.getContext().startActivity(intent);
 		
         		}
@@ -222,9 +228,11 @@ public class ActivityPrincipal extends ActionBarActivity {
     	 super.onCreate(savedInstanceState);
          setContentView(R.layout.activity_principal);
     	
-         
-         //parentActivity = (ActionBarActivity)this;
-         //emojiView = new EmojiView(parentActivity);
+       //obtenemos el nick del usuario logeado
+ 		
+ 	//	Bundle bundle = getIntent().getExtras();
+ 	//	userNick= bundle.getString("USER_NICK");
+ 		
          
          
          //obtener el telefono
@@ -275,7 +283,12 @@ public class ActivityPrincipal extends ActionBarActivity {
 		//Pintar area
 		mapController = (MapController) myOpenMapView.getController();
 		mapController.setZoom(18);
-           
+        
+		//Centre map
+    //    mapController.setCenter(startPoint);	
+        //limitar el panning
+    //    myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
+        
     	updateAreaPosition(startPoint);
     	
 	 	     
@@ -510,7 +523,10 @@ public class ActivityPrincipal extends ActionBarActivity {
    	        	markerArray = new ArrayList<Marker>();
    	        	
    	        	//OverlayItem olItem;
-   	        	MyMarker marker;
+   	        	MyMarker marker ;
+   	        	
+   	        	//MyMarker.nick = userNick;
+   	        	
    	        	//TextView bubbleDesc;
    	        	
    	        	zonesInArea = alZones.size();

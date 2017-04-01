@@ -74,6 +74,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	
 	private String idZone;
 	private String nameZone;
+	private String userNick;
 	
 	//******************
 	public static final int DIALOG_LOADING_COMMENTS = 0;
@@ -139,6 +140,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		Bundle bundle = getIntent().getExtras();
 		idZone= bundle.getString("ZONE_ID");
 		nameZone = bundle.getString("ZONE_NAME");
+//		userNick = bundle.getString("USER_NICK");
 				
 		
 		nameZoneLog = (TextView) findViewById(R.id.nameZoneLog);		
@@ -307,7 +309,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 				//Construimos el objeto cliente en formato JSON
 			    JSONObject dato = new JSONObject();
 			    		    
-			    comment = new Comment(txtComment.getText().toString(),Utils.ISODateToTime(Utils.getISODatePhone()),"Jaimito");//Utils.getDatePhone()
+			    comment = new Comment(txtComment.getText().toString(),Utils.ISODateToTime(Utils.getISODatePhone()),userNick);//Utils.getDatePhone()
 			    
 			    dato.put("text", Utils.stringToBinary(comment.getText()));
 			    dato.put("date", Utils.getISODatePhone());//comment.getDate());		  
