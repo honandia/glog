@@ -151,6 +151,71 @@ public class ActivityPrincipal extends ActionBarActivity {
     	
     }
     
+    public void newZone(GeoPoint point){
+    	
+    	newZoneArea.draw(myOpenMapView, Color.RED, myOpenMapView.getContext());
+      
+        newZoneMarker = new Marker(myOpenMapView);
+        newZoneMarker.setPosition(new GeoPoint(point.getLatitudeE6()+ 50,point.getLongitudeE6()));
+        newZoneMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
+                     
+        newZoneMarkerInfoWindow = new CustomInfoWindow(myOpenMapView);
+        
+        newZoneMarkerInfoWindow.btn.setOnClickListener(new View.OnClickListener() {
+        		public void onClick(View view) {
+        			 	            			
+        			//vamos a la activity para la creación del gLog
+        			
+        			Intent intent = new Intent(myOpenMapView.getContext(),CreateZoneActivity.class);	
+        			
+        			//pasamos el ID y el nombre de la zona qu vamos a consultar
+        			intent.putExtra("LATITUDE_NEW_ZONE", newZoneMarker.getPosition().getLatitude());
+        			intent.putExtra("LONGITUDE_NEW_ZONE", newZoneMarker.getPosition().getLongitude());
+        		
+        			myOpenMapView.getContext().startActivity(intent);
+		
+        		}
+        		});
+        
+        newZoneMarker.setInfoWindow(newZoneMarkerInfoWindow);
+         
+        newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
+
+        OnMarkerDragListener myDragListener = new OnMarkerDragListener() {
+			
+			@Override
+			public void onMarkerDragStart(Marker newZoneMarker) {
+				
+				newZoneMarker.hideInfoWindow();
+			
+			}
+			
+			@Override
+			public void onMarkerDragEnd(Marker arg0) {
+						
+				if (newZoneArea.checkGeoPointInArea(newZoneMarker.getPosition()))
+				{
+					//marker is in area
+					newZoneMarker.setTitle("¿Crear una zona en este punto?");
+					newZoneMarker.showInfoWindow();
+				}
+				else
+				{	
+					startMarker.setTitle("Situa la nueva zona dentro del area permitida");
+    		        startMarker.showInfoWindow();
+				}	
+			}
+			
+			@Override
+			public void onMarkerDrag(Marker arg0) {
+			}
+		};
+        
+        newZoneMarker.setOnMarkerDragListener(myDragListener);      
+        newZoneMarker.setDraggable(true);       
+        myOpenMapView.getOverlays().add(newZoneMarker);
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
@@ -260,183 +325,29 @@ public class ActivityPrincipal extends ActionBarActivity {
     	        	break;
     	        	
     	        case R.id.menu_zone://Añadir nueva zona
-        
-    	           newZoneArea = new Area(300, startPoint);
-    	            
-    	           newZoneArea.draw(myOpenMapView, Color.RED, myOpenMapView.getContext());
-    	           
-    	           startMarker.setPosition(new GeoPoint(startMarker.getPosition().getLatitudeE6() + newZoneArea.getAlcance(), startMarker.getPosition().getLongitudeE6() + newZoneArea.getAlcance()));
-    	           //myOpenMapView.invalidate();
-    	           
-    	           //comprobar si ya existen zonas dentro del area de creacion
-    	           
-    	           //Toast.makeText(this, "Arrastra la nueva zona dentro del area de creación", Toast.LENGTH_SHORT).show();
-    	            
-    	       //     startMarker.setTitle("Arrastra la nueva zona dentro del area de creación");
-    	       //     startMarker.showInfoWindow();
-    	            
-    	          
-    	           
-
-   	               //**********************
-   	               //***********************
-   	               //***************************
-    	  
-    	          
-   	               //**********************
-   	               //***********************
-   	               //***************************
-   	               
-    	          
-   	               
-   	            	
-   	            
-    	            newZoneMarker = new Marker(myOpenMapView);
-    	            newZoneMarker.setPosition(new GeoPoint(startPoint.getLatitudeE6()+ 50,startPoint.getLongitudeE6()));
-    	            newZoneMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
-    		         
-    	            
-    	            
-    	            newZoneMarkerInfoWindow = new CustomInfoWindow(myOpenMapView);
-    	            
-    	            
-     	           
-    	            newZoneMarkerInfoWindow.btn.setOnClickListener(new View.OnClickListener() {
-    	            		public void onClick(View view) {
-    	            			Toast.makeText(view.getContext(), "Button clicked", Toast.LENGTH_LONG).show();   	            			
-    	            			
-    	            			//********************************************
-    	            			//crear dialogo que recoja los datos necesarios para crear la nueva zona
-    	            			
-    	            			Intent intent = new Intent(myOpenMapView.getContext(),CreateZoneActivity.class);	
-    	            			
-    	            			//pasamos el ID y el nombre de la zona qu vamos a consultar
-    	            			intent.putExtra("LATITUDE_NEW_ZONE", newZoneMarker.getPosition().getLatitude());
-    	            			intent.putExtra("LONGITUDE_NEW_ZONE", newZoneMarker.getPosition().getLongitude());
-    	            		
-    	            			myOpenMapView.getContext().startActivity(intent);
-    	            			
-    	            			//********************************************
-    	            			
-    	            			
-    	            		}
-     	           });
-     	           
-     	            newZoneMarker.setInfoWindow(newZoneMarkerInfoWindow);
-    		            
-    	            newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
-    	            
-    	            
-    	            startMarker.setTitle("Arrastra la nueva zona dentro del area de creación");
-    		        startMarker.showInfoWindow();
-    	           
-    	            
-    	            OnMarkerDragListener myDragListener = new OnMarkerDragListener() {
-						
-						@Override
-						public void onMarkerDragStart(Marker newZoneMarker) {
-							
-							//newZoneMarker.setTitle("Empezando a mover...");
-							//newZoneMarker.showInfoWindow();
-							
-							newZoneMarker.hideInfoWindow();
-						/*	if (newZoneArea.checkGeoPointInArea(newZoneMarker.getPosition()))
-							{
-								//marker is in area
-								newZoneMarker.setDraggable(true);
-							}
-							else
-							{
-								newZoneMarker.setDraggable(false);
-							}		*/
-						
-						
-						}
-						
-						@Override
-						public void onMarkerDragEnd(Marker arg0) {
-							
-							//newZoneMarker.setTitle("¿Crear zona en este punto?");
-							//newZoneMarker.showInfoWindow();
-							
-							if (newZoneArea.checkGeoPointInArea(newZoneMarker.getPosition()))
-							{
-								//marker is in area
-								newZoneMarker.setTitle("¿Crear una zona en este punto?");
-								newZoneMarker.showInfoWindow();
-								
-								//newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
-							}
-							else
-							{
-								//newZoneMarker.setDraggable(false);
-								
-								
-								/*InfoWindow iWindow = new InfoWindow(R.layout.bonuspack_bubble,myOpenMapView) {
-									
-									@Override
-									public void onOpen(Object arg0) {
-										// TODO Auto-generated method stub
-										
-									}
-									
-									@Override
-									public void onClose() {
-										// TODO Auto-generated method stub
-										
-									}
-								};
-								
-								newZoneMarker.setInfoWindow(iWindow);*/
-								
-								//newZoneMarker.setTitle("Situa la nueva zona dentro del area permitida");
-								
-								startMarker.setTitle("Situa la nueva zona dentro del area permitida");
-			    		        startMarker.showInfoWindow();
-								
-							    
-								//newZoneMarker.showInfoWindow();
-								//newZoneMarkerInfoWindow.setButtonVisible(false);
-								
-								//newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_menu_compass));
-							}	
-						}
-						
-						@Override
-						public void onMarkerDrag(Marker arg0) {
-							
-							/*newZoneMarker.setTitle("moviendo...");
-							newZoneMarker.showInfoWindow();
-							if (newZoneArea.checkGeoPointInArea(newZoneMarker.getPosition()))
-							{
-								//marker is in area
-								//newZoneMarker.setDraggable(true);
-								
-								newZoneMarker.setTitle("Dentro");
-								newZoneMarker.showInfoWindow();
-								
-								newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
-							}
-							else
-							{
-								//newZoneMarker.setDraggable(false);
-								
-								newZoneMarker.setTitle("Fuera!");
-								newZoneMarker.showInfoWindow();
-								
-								
-								newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_menu_compass));
-							}	
-							*/
-						}
-					};
-    		        
-    		        newZoneMarker.setOnMarkerDragListener(myDragListener);
-    	            
-    	            newZoneMarker.setDraggable(true);
-    	            
-    		        myOpenMapView.getOverlays().add(newZoneMarker);
-    		                  
+    	        	
+    	        	newZoneArea = new Area(300, startPoint);
+    	        	
+    	        	boolean gLogsInCreationArea =false;
+    	        	for (Zone zone : alZones) {
+    	        		if(newZoneArea.checkGeoPointInArea(new GeoPoint(zone.getLatitude(),zone.getLongitude()))){
+    	        			//ya existe algun gLog dentro del area de creación
+    	        			gLogsInCreationArea= true;
+    	        		}
+    	    		}
+    	        	
+    	        	if (!gLogsInCreationArea){
+    	        		
+    	        		if(zonesInArea <= MAX_ZONES_IN_AREA)
+    	        		{
+    	        			startMarker.setPosition(new GeoPoint(startMarker.getPosition().getLatitudeE6() + newZoneArea.getAlcance(), startMarker.getPosition().getLongitudeE6() + newZoneArea.getAlcance()));
+    	        			startMarker.setTitle("Arrastra la nueva zona dentro del area de creación");
+    	        	        startMarker.showInfoWindow();
+    	        			newZone(startPoint);
+    	        		}
+    	        		else
+    	        			Toast.makeText(this, "Se ha superado el límite de gLogs en esta área", Toast.LENGTH_SHORT).show(); 
+    	        	}else Toast.makeText(this, "No se ha podido crear el nuevo gLog. Existe uno cerca", Toast.LENGTH_SHORT).show();
     	            
     	            break;
     	            

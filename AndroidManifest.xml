@@ -30,7 +30,7 @@
         android:theme="@style/Theme.TMessages.Start"
         android:name="org.telegram.ui.ApplicationLoader"
         android:hardwareAccelerated="true"
-        android:largeHeap="true">
+        android:largeHeap="true">
         -->
 
         <activity
@@ -49,6 +49,10 @@
         <activity
             android:name="com.glogApps.glog.CreateZoneActivity"
             android:label="@string/title_activity_create_zone" >
+        </activity>
+        <activity
+            android:name="com.gordApps.glog.LoginGlogActivity"
+            android:label="@string/title_activity_login_glog" >
         </activity>
     </application>
 

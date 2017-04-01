@@ -8,5 +8,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_zone">ZoneActivity</string>
     <string name="title_activity_create_zone">CreateZoneActivity</string>
+    <string name="title_activity_login_glog">LoginGlogActivity</string>
 
 </resources>

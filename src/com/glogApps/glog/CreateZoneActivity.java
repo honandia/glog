@@ -54,7 +54,7 @@ public class CreateZoneActivity extends ActionBarActivity {
 		newZone.setLatitude(bundle.getDouble("LATITUDE_NEW_ZONE"));
 		newZone.setLongitude(bundle.getDouble("LONGITUDE_NEW_ZONE"));
 		
-		newZone.setLastCommentDate(Utils.getDatePhone());
+		newZone.setLastCommentDate(Utils.getISODatePhone());
 		newZone.setLastCommentText("");
 		newZone.setLastCommentUser_id("");
 		
@@ -175,7 +175,7 @@ public class CreateZoneActivity extends ActionBarActivity {
              
               dismissDialog(DIALOG_CREATE_ZONE);
               
-	        	Toast.makeText(CreateZoneActivity.this,"Nueva zona creada", Toast.LENGTH_SHORT).show();
+              Toast.makeText(CreateZoneActivity.this,"Nueva zona creada", Toast.LENGTH_SHORT).show();
 
 	        }
 	    }
