@@ -402,6 +402,11 @@ public class ActivityPrincipal extends ActionBarActivity implements LocationList
     	    switch(item.getItemId())
     	    {
     	        case R.id.menu_settings://Ajustes
+    	        	
+    	        	
+    	        	Intent intentAjustes = new Intent(myOpenMapView.getContext(),SettingsActivity.class);	
+    	        	myOpenMapView.getContext().startActivity(intentAjustes);
+    	        	
     	            Toast.makeText(this, "Ajustes", Toast.LENGTH_SHORT).show();;
     	            break;
     	            

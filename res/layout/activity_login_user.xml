@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_fondo"
+    android:gravity="center|top"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/logoLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="center"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/textGlLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="gL"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/color_logo"
+            android:textSize="50dp" />
+
+        <TextView
+            android:id="@+id/textGLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageViewOLogo"
+            android:text="g"
+            android:textColor="@color/color_logo"
+            android:textSize="50dp" />
+
+        <ImageView
+            android:id="@+id/imageViewOLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/textGlLogo"
+            android:src="@drawable/ic_launcher" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBarLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/textInfoLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bienvenido"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/textUserLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Crea tu nombre de usuario..." >
+
+        <requestFocus />
+    </EditText>
+
+    <ImageButton
+        android:id="@+id/btnGlogLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="comprobarUsuario"
+        android:src="@drawable/ic_launcher" />
+
+</LinearLayout>

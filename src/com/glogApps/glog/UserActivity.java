@@ -14,8 +14,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.glogApps.glog.models.Nota;
+import com.glogApps.glog.utils.DownloadImageTask;
 import com.glogApps.glog.utils.Utils;
 import com.gordApps.glog.R;
+
 
 
 import android.net.Uri;
@@ -67,13 +69,13 @@ public class UserActivity extends ActionBarActivity {
 		
 		
 		
-		email = (TextView)findViewById(R.id.textEmail);
+		email = (TextView)findViewById(R.id.textGLogo);
 		facebook = (TextView)findViewById(R.id.textFaceBook);
 		twitter = (TextView)findViewById(R.id.textTwitter);
 		web = (TextView)findViewById(R.id.textWeb);
 		phone = (TextView)findViewById(R.id.textPhone);
 		
-		avatarIV = (ImageView)findViewById(R.id.imageViewAvatar);
+		avatarIV = (ImageView)findViewById(R.id.imageViewOLogo);
       	emailIV = (ImageView)findViewById(R.id.imageViewEmail);
       	facebookIV = (ImageView)findViewById(R.id.ImageViewFacebook);
       	twitterIV = (ImageView)findViewById(R.id.ImageViewTwitter);
@@ -211,7 +213,7 @@ public class UserActivity extends ActionBarActivity {
   	        	{
   	        		
   	        		avatarIV.setVisibility(View.VISIBLE);
-  	        		//new DownloadImageTask(avatarIV).execute(avatar.getText().toString().trim());
+  	        		new DownloadImageTask(avatarIV).execute(avatar.getText().toString().trim());
   	        
   	        	}
   	        	

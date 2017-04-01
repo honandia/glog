@@ -6,16 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.glogApps.glog.SavedCommentsActivity;
 import com.glogApps.glog.UserActivity;
-import com.glogApps.glog.ZoneActivity;
 import com.glogApps.glog.emoji.Emoji;
 import com.glogApps.glog.models.Comment;
 import com.glogApps.glog.models.Nota;
 import com.glogApps.glog.sqlite.NotasDataSource;
 import com.gordApps.glog.R;
-import com.gordApps.glog.R.id;
-import com.gordApps.glog.R.layout;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,15 +23,11 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +44,7 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 		/**
 		 * Constructor del Adapter
 		 * @param contexto: contexto de la activity que hace uso del adapter
-		 * @param arrayMascotas: datos que se desean visualizar en el listview
+		 * @param arrayComments: datos que se desean visualizar en el listview
 		 */
 		public ArrayAdapterComments(Context contexto,
 				ArrayList<Comment> arrayComments) {
@@ -75,9 +67,9 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 //			fotoMascota.setImageDrawable((utilidades.UtilsImagenes.cargarImagenAssets(contexto, arrayMascotas.get(position).urlImagen)));
 			
 		
-		//	ImageView avatarComment = (ImageView)item.findViewById(R.id.avatarComment);
+			//ImageView avatarComment = (ImageView)item.findViewById(R.id.avatarComment);
 		// Ralentiza mucho la insercion
-		//	new DownloadImageTask(avatarComment).execute("http://wpc.556e.edgecastcdn.net/80556E/img.news.tops/NE0QIYl0aqek33_1_zzb.jpg");
+			//new DownloadImageTask(avatarComment).execute("http://wpc.556e.edgecastcdn.net/80556E/img.news.tops/NE0QIYl0aqek33_1_zzb.jpg");
 		
 			// llamar a la restapi para obtener los link a partir del user
 			

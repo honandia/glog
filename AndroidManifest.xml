@@ -30,31 +30,36 @@
         android:theme="@style/Theme.TMessages.Start"
         android:name="org.telegram.ui.ApplicationLoader"
         android:hardwareAccelerated="true"
-        android:largeHeap="true">
+        android:largeHeap="true">
         -->
 
         <activity
             android:name="com.glogApps.glog.ActivityPrincipal"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.glogApps.glog.ZoneActivity"
-            android:label="@string/title_activity_zone" >
+            android:label="@string/title_activity_zone" 
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.glogApps.glog.ActivityPrincipal" />
         </activity>
         <activity
             android:name="com.glogApps.glog.CreateZoneActivity"
-            android:label="@string/title_activity_create_zone" >
+            android:label="@string/title_activity_create_zone" 
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.glogApps.glog.ActivityPrincipal" />
         </activity>
         <activity
             android:name="com.glogApps.glog.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:screenOrientation="portrait">
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -63,14 +68,21 @@
         </activity>
         <activity
             android:name="com.glogApps.glog.SavedCommentsActivity"
-            android:label="@string/title_activity_saved_comments" >
+            android:label="@string/title_activity_saved_comments" 
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.glogApps.glog.ActivityPrincipal" />
         </activity>
         <activity
             android:name="com.glogApps.glog.UserActivity"
-            android:label="@string/title_activity_user" >
+            android:label="@string/title_activity_user" 
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.glogApps.glog.SettingsActivity"
+            android:label="@string/title_activity_settings" 
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
