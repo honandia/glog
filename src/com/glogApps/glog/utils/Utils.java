@@ -72,11 +72,26 @@ public class Utils {
 		}
 		else
 		{
-			textAgo.append("hace ");
+			
+			//textAgo.append("hace ");
 			if (hours > 0)
-				textAgo.append(hours + "h ");
-			if (minutes > 0)
-				textAgo.append(minutes + "m ");
+			{
+				textAgo.append("hace "+hours + " horas ");
+				if (minutes > 0)
+					textAgo.append("y "+minutes + " minutos");
+			}
+			else
+			{
+				if (minutes < 4)
+				{
+					textAgo.append("ahora mismo");
+				}
+				else
+				{
+					textAgo.append("hace "+minutes + " minutos");
+				}
+			}
+			
 			//if (seconds > 0)
 			//	textAgo.append(seconds + "s");
 		}

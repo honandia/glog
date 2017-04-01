@@ -6,7 +6,6 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/rowUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -16,36 +15,54 @@
             android:layout_height="wrap_content"
             android:src="@drawable/emo_im_tongue_sticking_out" />
 
-        <TextView
-            android:id="@+id/userComment"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="15dp"
-            android:text="TextView" />
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/dateComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_marginLeft="100dp"
-            android:text="TextView" />
+            <LinearLayout
+                android:id="@+id/rowUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/userComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="15dp"
+                    android:text="TextView"
+                    android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/rowComment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+                <TextView
+                    android:id="@+id/dateComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginLeft="15dp"
+                    android:text="TextView"
+                    android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/textComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rowComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/textComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="15dp"
+                    android:text="Small Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -57,28 +74,33 @@
         android:visibility="gone" >
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/img_copt_reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:src="@drawable/ic_copt_reply" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/img_copt_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:src="@drawable/ic_copt_contact" />
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/img_copt_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:src="@drawable/ic_copt_share" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/img_copt_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:src="@drawable/ic_copt_record" />
+
     </LinearLayout>
 
 </LinearLayout>

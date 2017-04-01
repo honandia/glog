@@ -52,7 +52,11 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 //			fotoMascota.setImageDrawable((utilidades.UtilsImagenes.cargarImagenAssets(contexto, arrayMascotas.get(position).urlImagen)));
 			
 			ImageView avatarComment = (ImageView)item.findViewById(R.id.avatarComment);
-		//	avatarComment.setImageDrawable(R.drawable.ic_launcher);
+		
+			new DownloadImageTask(avatarComment).execute("http://wpc.556e.edgecastcdn.net/80556E/img.news.tops/NE0QIYl0aqek33_1_zzb.jpg");
+			// llamar a la restapi para obtener los link a partir del user
+			
+			//	avatarComment.setImageDrawable(R.drawable.ic_launcher);
 			
 			//Comment
 			TextView text=(TextView)item.findViewById(R.id.textComment);
@@ -94,6 +98,49 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 					
 				}
 			});
+			ImageView imgRecord = (ImageView)item.findViewById(R.id.img_copt_record);
+			imgRecord.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					Toast.makeText(v.getContext(), "Record", Toast.LENGTH_SHORT).show();
+					
+				}
+			});
+			
+			ImageView imgShare = (ImageView)item.findViewById(R.id.img_copt_share);
+			imgShare.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					Toast.makeText(v.getContext(), "Share", Toast.LENGTH_SHORT).show();
+				}
+			});
+			
+			ImageView imgReply = (ImageView)item.findViewById(R.id.img_copt_reply);
+			imgReply.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					Toast.makeText(v.getContext(), "Reply", Toast.LENGTH_SHORT).show();
+					
+				}
+			});
+			
+			ImageView imgContact = (ImageView)item.findViewById(R.id.img_copt_contact);
+			imgContact.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					Toast.makeText(v.getContext(), "Contact", Toast.LENGTH_SHORT).show();
+					
+				}
+			});
+			
 			/*		OnLongClickListener commentsLongClick = new OnLongClickListener() {
 				
 				@Override
