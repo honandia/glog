@@ -147,14 +147,14 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		nameZone = bundle.getString("ZONE_NAME");
 				
 		
-		nameZoneLog = (TextView) findViewById(R.id.nameZoneLog);		
+		nameZoneLog = (TextView) findViewById(R.id.nameSavedComments);		
 		nameZoneLog.setText(nameZone);
 		
 		emojiButton = (ImageView)findViewById(R.id.chat_smile_button);
 		
 		txtComment = (EditText) findViewById(R.id.txtComment);
 		
-		lstComments = (ListView)findViewById(R.id.commentsZoneLog);
+		lstComments = (ListView)findViewById(R.id.savedCommentsLV);
 		
 		actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -323,7 +323,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 				//Construimos el objeto cliente en formato JSON
 			    JSONObject dato = new JSONObject();
 			    		    
-			    comment = new Comment(txtComment.getText().toString(),Utils.ISODateToTime(Utils.getISODatePhone()),"Jaimito");//Utils.getDatePhone()
+			    comment = new Comment(txtComment.getText().toString(),Utils.ISODateToTime(Utils.getISODatePhone()),"chuck");//Utils.getDatePhone()
 			    
 			    dato.put("text", Utils.stringToBinary(comment.getText()));
 			    dato.put("date", Utils.getISODatePhone());//comment.getDate());		  

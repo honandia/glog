@@ -30,13 +30,12 @@
         android:theme="@style/Theme.TMessages.Start"
         android:name="org.telegram.ui.ApplicationLoader"
         android:hardwareAccelerated="true"
-        android:largeHeap="true">
+        android:largeHeap="true">
         -->
 
         <activity
             android:name="com.glogApps.glog.ActivityPrincipal"
             android:label="@string/app_name" >
-            
         </activity>
         <activity
             android:name="com.glogApps.glog.ZoneActivity"
@@ -61,6 +60,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.glogApps.glog.SavedCommentsActivity"
+            android:label="@string/title_activity_saved_comments" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.glogApps.glog.ActivityPrincipal" />
+        </activity>
+        <activity
+            android:name="com.glogApps.glog.UserActivity"
+            android:label="@string/title_activity_user" >
         </activity>
     </application>
 

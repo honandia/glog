@@ -1,13 +1,7 @@
 package com.glogApps.glog.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import com.glogApps.glog.SavedCommentsActivity;
-import com.glogApps.glog.UserActivity;
 import com.glogApps.glog.ZoneActivity;
 import com.glogApps.glog.emoji.Emoji;
 import com.glogApps.glog.models.Comment;
@@ -20,10 +14,6 @@ import com.gordApps.glog.R.layout;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,14 +29,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ArrayAdapterComments extends ArrayAdapter<Comment>{
+public class ArrayAdapterNotes extends ArrayAdapter<Nota>{
 	
 	private Context contexto;
-	private ArrayList<Comment> arrayComments;
+	private ArrayList<Nota> arrayNotas;
 	private NotasDataSource notasDS;
-	private Comment currentComment;
+	private Nota currentNota;
 	private ListView lv;
-    private LinearLayout layoutACapturar;
+
 
 		
 		/**
@@ -54,13 +44,13 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 		 * @param contexto: contexto de la activity que hace uso del adapter
 		 * @param arrayMascotas: datos que se desean visualizar en el listview
 		 */
-		public ArrayAdapterComments(Context contexto,
-				ArrayList<Comment> arrayComments) {
-			super(contexto, R.layout.comment, arrayComments);
+		public ArrayAdapterNotes(Context contexto,
+				ArrayList<Nota> arrayNotas) {
+			super(contexto, R.layout.note, arrayNotas);
 			this.contexto=contexto;
-			this.arrayComments=arrayComments;
+			this.arrayNotas=arrayNotas;
 			this.notasDS = new NotasDataSource(contexto);
-			this.currentComment = new Comment();
+			this.currentNota = new Nota();
 			
 
 		}
@@ -68,7 +58,7 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View item=
-			LayoutInflater.from(contexto).inflate(R.layout.comment, null);
+			LayoutInflater.from(contexto).inflate(R.layout.note, null);
 			//A partir de esta vista, recojo los controles
 			//Imagen de la mascota
 //			ImageView fotoMascota=(ImageView)item.findViewById(R.id.imgMascota);
@@ -85,16 +75,16 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 			
 			//Comment
 			TextView text=(TextView)item.findViewById(R.id.textNote);
-			text.setText(Emoji.replaceEmoji(arrayComments.get(position).getText()));
+			text.setText(Emoji.replaceEmoji(arrayNotas.get(position).gettexto()));
 			//text.setText(arrayComments.get(position).text);
 			
 			//Date
 			TextView date=(TextView)item.findViewById(R.id.dateNote);
-			date.setText(Utils.TimeToTextAgo(arrayComments.get(position).getDate()));
+			date.setText(arrayNotas.get(position).getDate());
 			
 			//User
 			TextView user=(TextView)item.findViewById(R.id.userNote);
-			user.setText(arrayComments.get(position).getUser_id());
+			user.setText(arrayNotas.get(position).getUser());
 					
 			
 			lv = (ListView)parent.findViewById(R.id.savedCommentsLV);
@@ -130,8 +120,7 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 							for (int i = 0; i < lv.getChildCount(); i++) {
 								if(lv.getChildAt(i).findViewById(R.id.rowNoteOptions).getVisibility() == View.VISIBLE)
 								{
-									currentComment = arrayComments.get(i);
-									layoutACapturar = (LinearLayout)lv.getChildAt(i).findViewById(R.id.rowComment);
+									currentNota = arrayNotas.get(i);
 								}
 							}
 							
@@ -148,59 +137,45 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 			imgRecord.setOnClickListener(new OnClickListener() {
 				
 				@Override
-				public void onClick(View v) {
+				public void onClick(View v) {					
 					
 					new AlertDialog.Builder(contexto)
-				    .setTitle("Guardar comentario")
-				    .setMessage("¿Estas seguro de que quieres guardar este comentario?")
+				    .setTitle("Borrar Nota")
+				    .setMessage("¿Estas seguro de que quieres borrar esta nota?")
 				    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int which) { 
 				            // continue with delete
-				        	Nota noteToSave = new Nota();
-							noteToSave.setTexto(currentComment.getText());
-							noteToSave.setUser(currentComment.getUser_id());
-							noteToSave.setDate(currentComment.getDate().format2445());
-							
-							noteToSave.setgLog("glog");
-							noteToSave.setDescGLog("desc glog");
-							noteToSave.setPlaceGLog("placeGlog");
-							
-							notasDS.open();
-							notasDS.crearNota(noteToSave);
+				        	notasDS.open();
+							notasDS.borrarNota(currentNota);
 							notasDS.close();
-							Toast.makeText(contexto, "Guardado", Toast.LENGTH_SHORT).show();
+							arrayNotas.remove(currentNota);
+							
+							ArrayAdapterNotes.this.notifyDataSetChanged();
+							
+							Toast.makeText(contexto, "Nota borrada", Toast.LENGTH_SHORT).show();
 				        }
 				     })
 				    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int which) { 
 				            // do nothing
-				        	Toast.makeText(contexto, "Comentario no guardado", Toast.LENGTH_SHORT).show();
+				        	Toast.makeText(contexto, "Borrado cancelado", Toast.LENGTH_SHORT).show();
 				        }
 				     })
-				    .setIcon(R.drawable.ic_copt_record)
-				     .show();	
+				    .setIcon(R.drawable.img_nopt_delete)
+				     .show();
+					
+					
 				}
 			});
-			
+		/*	
 			ImageView imgShare = (ImageView)item.findViewById(R.id.img_copt_share);
 			imgShare.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
-							
-					/*TextView nombreZona = new TextView(contexto);
-					nombreZona.setText("NOMBRE_DE_LA_ZONA");
-					layoutACapturar.addView(nombreZona);*/
 					
-					compartirView(layoutACapturar);
-					
-					/*Intent sendIntent = new Intent();
-					sendIntent.setAction(Intent.ACTION_SEND);
-					sendIntent.putExtra(Intent.EXTRA_TEXT, currentComment.getText());
-					sendIntent.setType("text/plain");
-					contexto.startActivity(sendIntent);
 					Toast.makeText(v.getContext(), "Share", Toast.LENGTH_SHORT).show();
-					*/
+					
 					
 				}
 			});
@@ -221,18 +196,15 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 				
 				@Override
 				public void onClick(View v) {
-					//obtener el user y pasarselo a la activity de users
 					
-					Intent intent = new Intent(contexto,UserActivity.class);
-					intent.putExtra("USER_ID", currentComment.getUser_id());
-    	        	contexto.startActivity(intent);
-    	            
 					Toast.makeText(v.getContext(), "Contact", Toast.LENGTH_SHORT).show();
 					
 					
 					
 				}
 			});
+			
+			*/
 			
 			/*		OnLongClickListener commentsLongClick = new OnLongClickListener() {
 				
@@ -289,40 +261,6 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 			*/
 			return item;
 			
-		}
-		
-		private void compartirView(View viewShare) {
-		    // Creamos un bitmap con el tamaño de la vista
-		    Bitmap bitmap = Bitmap.createBitmap(viewShare.getWidth(),
-		            viewShare.getHeight(), Bitmap.Config.ARGB_8888);
-		    // Creamos el canvas para pintar en el bitmap
-		    Canvas canvas = new Canvas(bitmap);
-		    // Pintamos el contenido de la vista en el canvas y así en el bitmap
-		    viewShare.draw(canvas);
-		 
-		    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		 
-		    Uri uriF = null;
-		    try {
-		        File f = File.createTempFile("sharedImage", ".jpg",
-		                contexto.getExternalCacheDir());
-		        f.deleteOnExit();
-		        FileOutputStream fo = new FileOutputStream(f);
-		        fo.write(stream.toByteArray());
-		        fo.close();
-		 
-		        uriF = Uri.fromFile(f);
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
-		 
-		    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-		    sharingIntent.setType("image/jpeg");
-		 
-		    sharingIntent.putExtra(Intent.EXTRA_STREAM, uriF);
-		    contexto.startActivity(sharingIntent);
-		 
 		}
 		
 		

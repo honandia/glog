@@ -1,5 +1,9 @@
 package com.glogApps.glog;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -8,6 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 
 import com.glogApps.glog.models.Comment;
@@ -15,9 +20,12 @@ import com.glogApps.glog.models.Zone;
 import com.glogApps.glog.utils.ArrayAdapterComments;
 import com.glogApps.glog.utils.Utils;
 import com.gordApps.glog.R;
+import com.gordApps.glog.R.drawable;
 import com.gordApps.glog.R.layout;
 import com.gordApps.glog.R.menu;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -42,8 +50,12 @@ public class CreateZoneActivity extends ActionBarActivity {
 	Zone newZone;
 	EditText name,desc;
 	
+	String infoNewZone;
+	
 	ActionBar actionBar;
 	
+	View doneButton;
+	View cancelButton;
 	
 	
 	@Override
@@ -60,9 +72,38 @@ public class CreateZoneActivity extends ActionBarActivity {
 		newZone.setLatitude(bundle.getDouble("LATITUDE_NEW_ZONE"));
 		newZone.setLongitude(bundle.getDouble("LONGITUDE_NEW_ZONE"));
 		
+		infoNewZone = bundle.getString("INFO_NEW_ZONE");
+		
+		
+	/*	
+		Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
+		StringBuilder builder = new StringBuilder();
+		try {
+		    List<Address> address = geoCoder.getFromLocation(newZone.getLatitude(), newZone.getLongitude(), 1);
+		    int maxLines = address.get(0).getMaxAddressLineIndex();
+		    for (int i=0; i<maxLines; i++) {
+		    String addressStr = address.get(0).getAddressLine(i);
+		    builder.append(addressStr);
+		    builder.append(" ");
+		    }
+
+		City = builder.toString(); //This is the complete address.
+		} catch (IOException e) {
+			
+		}
+		  catch (NullPointerException e) {}
+		
+		*/
+		
+		
 		newZone.setLastCommentDate(Utils.getISODatePhone());
-		newZone.setLastCommentText("");
-		newZone.setLastCommentUser_id("");
+		
+		
+		
+		//***************************
+		newZone.setLastCommentText("Creada por Pepito el "+newZone.lastCommentDate);
+		newZone.setLastCommentUser_id("Pepito");
+		//***************************
 		
 		actionBar = getSupportActionBar();
 	//	actionBar.setDisplayHomeAsUpEnabled(true);
@@ -77,23 +118,30 @@ public class CreateZoneActivity extends ActionBarActivity {
         //parentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         actionBar.setCustomView(R.layout.settings_do_action_layout);
-        View cancelButton = actionBar.getCustomView().findViewById(R.id.cancel_button);
+        cancelButton = actionBar.getCustomView().findViewById(R.id.cancel_button);
+        cancelButton.setBackgroundColor(drawable.glogtheme_btn_default_holo_light);
+       
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-         //       finishFragment();
+                finish();
             }
         });
-   //     doneButton = actionBar.getCustomView().findViewById(R.id.done_button);
-   //     doneButton.setOnClickListener(new View.OnClickListener() {
-   //         @Override
-   //         public void onClick(View view) {
-   //             if (firstNameField.getText().length() != 0) {
-   //                 saveName();
-   //                 finishFragment();
-   //             }
-   //         }
-   //     });
+        doneButton = actionBar.getCustomView().findViewById(R.id.done_button);
+        doneButton.setBackgroundColor(drawable.glogtheme_btn_default_holo_light);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	
+            	crearNuevaZona(view);
+            	//finish();
+               
+            	/* if (firstNameField.getText().length() != 0) {
+                    saveName();
+                    finishFragment();
+                }*/
+            }
+        });
 
 		//cancelar
 		/**CREAR TABS**/
@@ -118,7 +166,7 @@ public class CreateZoneActivity extends ActionBarActivity {
 		desc = (EditText)findViewById(R.id.txtDescNZ);
 		
 		newZone.setName(name.getText().toString());
-		newZone.setDesc(desc.getText().toString());
+		newZone.setDesc(desc.getText().toString() + " ,"+infoNewZone);
 		
 		TareaRAInsertarZona tarea = new TareaRAInsertarZona();
 		tarea.execute();
@@ -179,14 +227,13 @@ public class CreateZoneActivity extends ActionBarActivity {
 				
 				//Construimos el objeto cliente en formato JSON
 			    JSONObject dato = new JSONObject();
-			 
-			    
+			 		    
 			    
 			    dato.put("longitude", newZone.getLongitude());
 			    dato.put("latitude", newZone.getLatitude());		  
 			    dato.put("name", newZone.getName());
 			    dato.put("desc", newZone.getDesc());
-			    dato.put("lastCommentText", newZone.getLastCommentText());
+			    dato.put("lastCommentText", Utils.stringToBinary(newZone.getLastCommentText()));
 			    dato.put("lastCommentDate", newZone.getLastCommentDate());
 			    dato.put("lastCommentUser_id", newZone.getLastCommentUser_id());
 			 
@@ -194,7 +241,7 @@ public class CreateZoneActivity extends ActionBarActivity {
 			    post.setEntity(entity);
 			 
 			        HttpResponse resp = httpClient.execute(post);
-			        String respStr = EntityUtils.toString(resp.getEntity());
+			     //   String respStr = EntityUtils.toString(resp.getEntity());
 			 
 			   //     if(respStr.equals("true"))
 			  //          lblResultado.setText("Actualizado OK.");
@@ -222,6 +269,7 @@ public class CreateZoneActivity extends ActionBarActivity {
               dismissDialog(DIALOG_CREATE_ZONE);
               
               Toast.makeText(CreateZoneActivity.this,"Nueva zona creada", Toast.LENGTH_SHORT).show();
+              
 
 	        }
 	    }

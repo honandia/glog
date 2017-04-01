@@ -8,19 +8,29 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
 	private static MySQLiteOpenHelper mOpenHelper = null;
 	
-	private static final String DATABASE_NAME = "Notas";
+	private static final String DATABASE_NAME = "Nota";
 	private static final int DATABASE_VERSION = 1;
 	
 	public static class TablaNotas{
 		public static String TABLA_NOTAS = "notas";
 		public static String COLUMNA_ID = "_id";
 		public static String COLUMNA_TEXTO = "texto";
+		public static String COLUMNA_USER = "user";
+		public static String COLUMNA_DATE = "date";
+		public static String COLUMNA_GLOG = "gLog";
+		public static String COLUMNA_DESCGLOG = "descGLog";
+		public static String COLUMNA_PLACEGLOG = "placeGLog";
 	}
 	
 	private static final String DATABASE_CREATE = "create table "
 			+ TablaNotas.TABLA_NOTAS + "(" + TablaNotas.COLUMNA_ID
 			+ " integer primary key autoincrement, " + TablaNotas.COLUMNA_TEXTO
-			+ " text not null);";
+			+ " text not null,"
+			+TablaNotas.COLUMNA_USER + " text,"
+			+TablaNotas.COLUMNA_DATE + " text,"
+			+TablaNotas.COLUMNA_GLOG + " text,"
+			+TablaNotas.COLUMNA_DESCGLOG + " text,"
+			+TablaNotas.COLUMNA_PLACEGLOG + " text);";
 	
 	public static MySQLiteOpenHelper getInstance(Context context){
 		if (mOpenHelper == null){

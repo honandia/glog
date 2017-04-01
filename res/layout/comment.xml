@@ -16,17 +16,19 @@
             android:src="@drawable/emo_im_tongue_sticking_out" />
 
         <LinearLayout
+            android:id="@+id/rowComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/msg_out_photo"
             android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/rowUser"
+                android:id="@+id/rowUserNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
                 <TextView
-                    android:id="@+id/userComment"
+                    android:id="@+id/userNote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
@@ -35,7 +37,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/dateComment"
+                    android:id="@+id/dateNote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|right"
@@ -46,12 +48,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/rowComment"
+                android:id="@+id/rowNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
                 <TextView
-                    android:id="@+id/textComment"
+                    android:id="@+id/textNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -66,7 +68,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/rowCommentOptions"
+        android:id="@+id/rowNoteOptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -78,6 +80,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/msg_out_photo"
             android:src="@drawable/ic_copt_reply" />
 
         <ImageView
@@ -85,6 +89,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/msg_out_photo"
             android:src="@drawable/ic_copt_contact" />
 
         <ImageView
@@ -92,13 +98,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/msg_out_photo"
             android:src="@drawable/ic_copt_share" />
 
         <ImageView
-            android:id="@+id/img_copt_record"
+            android:id="@+id/img_nopt_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/msg_out_photo"
             android:src="@drawable/ic_copt_record" />
 
     </LinearLayout>
