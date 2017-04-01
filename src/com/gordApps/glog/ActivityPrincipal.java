@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.bonuspack.overlays.Marker;
+import org.osmdroid.bonuspack.overlays.Marker.OnMarkerDragListener;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -48,11 +49,11 @@ public class ActivityPrincipal extends ActionBarActivity {
 
 	    
 	//MapView mapView;
-    LinearLayout searchPanel;
-    Button searchButton;
-    EditText searchText;
+   // LinearLayout searchPanel;
+    //Button searchButton;
+    //EditText searchText;
    
-    public static final int SEARCH_ID = Menu.FIRST;
+    //public static final int SEARCH_ID = Menu.FIRST;
 
     private MapView myOpenMapView;
     private MapController mapController;
@@ -65,10 +66,19 @@ public class ActivityPrincipal extends ActionBarActivity {
     
     ArrayList<Marker> markerArray;
     
-    GeoPoint ptII;
+    Area myArea;
+    
+    GeoPoint startPoint;
+    
+    Marker startMarker;
+    Marker newZoneMarker;
+    
+    Area newZoneArea;
+    
+    /*GeoPoint ptII;
     GeoPoint ptIS;
     GeoPoint ptDI;
-    GeoPoint ptDS;
+    GeoPoint ptDS;*/
     
     public ArrayList<Zone> alZones;
     
@@ -116,10 +126,10 @@ public class ActivityPrincipal extends ActionBarActivity {
             }
         }
         
-        GeoPoint startPoint = new GeoPoint(43.38110, -3.21863);
-               if(location != null){
-              	 startPoint = new GeoPoint(location);
-               } 			
+        startPoint = new GeoPoint(43.38110, -3.21863);
+        //       if(location != null){
+        //      	 startPoint = new GeoPoint(location);
+        //       } 			
     	
     	
    /* 	 locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);  
@@ -150,48 +160,58 @@ public class ActivityPrincipal extends ActionBarActivity {
     		
 	         
 	         
-	         //Determinar el area de acción
-	         //int alcance=1500;
-	         int alcance=1800;
+	         //alcance 1800
+	         myArea = new Area(1800, startPoint);
 	         
-	          ptII= new GeoPoint(startPoint.getLatitudeE6()+alcance, startPoint.getLongitudeE6()-alcance);
+	         myArea.draw(myOpenMapView, Color.GREEN, this);
+	         
+	         //Determinar el area de acción
+	         
+	         //int alcance=1500;
+	         //int alcance=1800;
+	         
+	          //ptII= new GeoPoint(startPoint.getLatitudeE6()+alcance, startPoint.getLongitudeE6()-alcance);
 	          
-	          ptIS= new GeoPoint(startPoint.getLatitudeE6()-alcance, startPoint.getLongitudeE6()-alcance);
+	          //ptIS= new GeoPoint(startPoint.getLatitudeE6()-alcance, startPoint.getLongitudeE6()-alcance);
 	          
-	          ptDI= new GeoPoint(startPoint.getLatitudeE6()+alcance, startPoint.getLongitudeE6()+alcance);
+	          //ptDI= new GeoPoint(startPoint.getLatitudeE6()+alcance, startPoint.getLongitudeE6()+alcance);
 	          
-	          ptDS= new GeoPoint(startPoint.getLatitudeE6()-alcance, startPoint.getLongitudeE6()+alcance);
+	          //ptDS= new GeoPoint(startPoint.getLatitudeE6()-alcance, startPoint.getLongitudeE6()+alcance);
 	          
 	          
 		         
 	         //limitar el panning
-	         BoundingBoxE6 bbox = new BoundingBoxE6(ptII.getLatitudeE6(),
+	         BoundingBoxE6 bbox = new BoundingBoxE6(myArea.getPtII().getLatitudeE6(),
+						myArea.getPtDS().getLatitudeE6(), 
+						myArea.getPtII().getLongitudeE6(), 
+						myArea.getPtDS().getLongitudeE6());
+	         /*BoundingBoxE6 bbox = new BoundingBoxE6(ptII.getLatitudeE6(),
 	        		 								ptDS.getLatitudeE6(), 
 	        		 								ptII.getLongitudeE6(), 
-	        		 								ptDS.getLongitudeE6());
+	        		 								ptDS.getLongitudeE6());*/
 	    	 
 	         
 	         myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
 	         
 	         
 	         //dibujar area de acción
-	         PathOverlay myOverlay= new PathOverlay(Color.GREEN, this);
-	         myOverlay.getPaint().setStyle(Style.FILL);
-	         myOverlay.getPaint().setAlpha(128);
+	        // PathOverlay myOverlay= new PathOverlay(Color.GREEN, this);
+	         //myOverlay.getPaint().setStyle(Style.FILL);
+	         //myOverlay.getPaint().setAlpha(128);
 
-	         myOverlay.addPoint(ptII);
-	         myOverlay.addPoint(ptDI);
-	         myOverlay.addPoint(ptDS);
-	         myOverlay.addPoint(ptIS);
+	         //myOverlay.addPoint(ptII);
+	         //myOverlay.addPoint(ptDI);
+	         //myOverlay.addPoint(ptDS);
+	         //myOverlay.addPoint(ptIS);
 
-	         myOpenMapView.getOverlays().add(myOverlay);
+	         //myOpenMapView.getOverlays().add(myOverlay);
 	         
 	    
 	         //*********************************
 	         
 	         
 	         
-	         Marker startMarker = new Marker(myOpenMapView);
+	         startMarker = new Marker(myOpenMapView);
 	         startMarker.setPosition(startPoint);
 	         startMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
 	         
@@ -211,7 +231,7 @@ public class ActivityPrincipal extends ActionBarActivity {
 	         
 	         
 	         TareaRAObtenerZonas tarea = new TareaRAObtenerZonas();
-	 	    tarea.execute();
+	 	     tarea.execute();
 	 	    
 	 	    
 	         //pruebas pintando zonas ...
@@ -251,14 +271,14 @@ public class ActivityPrincipal extends ActionBarActivity {
     	
            
             
-            searchPanel = (LinearLayout) findViewById(R.id.searchPanel);
-            searchButton = (Button) findViewById(R.id.searchButton);
-            searchText = (EditText) findViewById(R.id.searchText);
+            //searchPanel = (LinearLayout) findViewById(R.id.searchPanel);
+            //searchButton = (Button) findViewById(R.id.searchButton);
+           // searchText = (EditText) findViewById(R.id.searchText);
             
            
             
             
-            searchButton.setOnClickListener(new View.OnClickListener() {
+          /*  searchButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     String searchFor = searchText.getText().toString();
                     JSONArray results = searchLocation(searchFor);
@@ -289,12 +309,132 @@ public class ActivityPrincipal extends ActionBarActivity {
                     
                     
                 }
-            });
+            });*/
+            //***********************
             
             //setContentView(R.layout.activity_principal);
     	}
-
+    
+    
     	@Override
+    	public boolean onCreateOptionsMenu(Menu menu) {
+    		// Inflate the menu; this adds items to the action bar if it is present.
+    		getMenuInflater().inflate(R.menu.activity_principal, menu);
+    		return true;
+    	}
+    	
+    	@Override
+    	public boolean onOptionsItemSelected(MenuItem item) {
+    	    switch(item.getItemId())
+    	    {
+    	        case R.id.menu_settings:
+    	            Toast.makeText(this, "Ajustes", Toast.LENGTH_SHORT).show();;
+    	            break;
+    	        case R.id.menu_zone:
+    	            
+    	            
+    	           newZoneArea = new Area(300, startPoint);
+    	            
+    	           newZoneArea.draw(myOpenMapView, Color.RED, myOpenMapView.getContext());
+    	           
+    	           //comprobar si ya existen zonas dentro del area de creacion
+    	           
+    	           //Toast.makeText(this, "Arrastra la nueva zona dentro del area de creación", Toast.LENGTH_SHORT).show();
+    	            
+    	       //     startMarker.setTitle("Arrastra la nueva zona dentro del area de creación");
+    	       //     startMarker.showInfoWindow();
+    	            
+    	            
+    	            newZoneMarker = new Marker(myOpenMapView);
+    	            newZoneMarker.setPosition(new GeoPoint(startPoint.getLatitudeE6()+ 50,startPoint.getLongitudeE6()));
+    	            newZoneMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
+    		         
+    		            
+    	            newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
+    	            newZoneMarker.setTitle("Arrastra la nueva zona dentro del area de creación");
+    		        
+    	            OnMarkerDragListener myDragListener = new OnMarkerDragListener() {
+						
+						@Override
+						public void onMarkerDragStart(Marker newZoneMarker) {
+							
+							newZoneMarker.setTitle("Empezando a mover...");
+							newZoneMarker.showInfoWindow();
+						/*	if (newZoneArea.checkGeoPointInArea(newZoneMarker.getPosition()))
+							{
+								//marker is in area
+								newZoneMarker.setDraggable(true);
+							}
+							else
+							{
+								newZoneMarker.setDraggable(false);
+							}		*/
+						
+						
+						}
+						
+						@Override
+						public void onMarkerDragEnd(Marker arg0) {
+							
+							newZoneMarker.setTitle("¿Crear zona en este punto?");
+							newZoneMarker.showInfoWindow();
+							
+						}
+						
+						@Override
+						public void onMarkerDrag(Marker arg0) {
+							
+							/*newZoneMarker.setTitle("moviendo...");
+							newZoneMarker.showInfoWindow();
+							if (newZoneArea.checkGeoPointInArea(newZoneMarker.getPosition()))
+							{
+								//marker is in area
+								//newZoneMarker.setDraggable(true);
+								
+								newZoneMarker.setTitle("Dentro");
+								newZoneMarker.showInfoWindow();
+								
+								newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
+							}
+							else
+							{
+								//newZoneMarker.setDraggable(false);
+								
+								newZoneMarker.setTitle("Fuera!");
+								newZoneMarker.showInfoWindow();
+								
+								
+								newZoneMarker.setIcon(getResources().getDrawable(R.drawable.ic_menu_compass));
+							}	
+							
+						}
+					};
+    		        
+    		        newZoneMarker.setOnMarkerDragListener(myDragListener);
+    	            
+    	            newZoneMarker.setDraggable(true);
+    	            
+    		        myOpenMapView.getOverlays().add(newZoneMarker);
+    		        
+    		        
+    		        
+    		        
+    	          
+    	            
+    	            
+    	            
+    	            break;
+    	        case R.id.menu_remid:
+    	            Toast.makeText(this, "Recuerdos", Toast.LENGTH_SHORT).show();
+    	            break;
+    	        default:
+    	            return super.onOptionsItemSelected(item);
+    	    }
+    	 
+    	    return true;
+    	}
+
+    /*	@Override
     	public boolean onCreateOptionsMenu(Menu menu) {
     		// Inflate the menu; this adds items to the action bar if it is present.
     		
@@ -304,7 +444,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     		boolean result = super.onCreateOptionsMenu(menu);
     	    menu.add(0, SEARCH_ID, 0, "Search");
     	    return result;
-    	}
+    	}*/
 
     	/*@Override
         public boolean onOptionsItemSelected(MenuItem item) {
@@ -319,7 +459,7 @@ public class ActivityPrincipal extends ActionBarActivity {
             return result;
         }*/
     	
-    	@Override
+    /*	@Override
     	public boolean onOptionsItemSelected(MenuItem item) {
     	    switch(item.getItemId())
     	    {
@@ -334,8 +474,8 @@ public class ActivityPrincipal extends ActionBarActivity {
     	    }
     	 
     	    return true;
-    	}
-    	
+    	}*/
+  /*  	
     	public JSONArray searchLocation(String query) {
             JSONArray results = new JSONArray();
 
@@ -370,7 +510,7 @@ public class ActivityPrincipal extends ActionBarActivity {
             imm.hideSoftInputFromWindow(
                  searchText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             searchPanel.setVisibility(View.INVISIBLE);
-        }
+        }*/
     
 
     	
@@ -438,10 +578,10 @@ public class ActivityPrincipal extends ActionBarActivity {
 	   	  
 	   	     try {
 	   	    	 
-	   	    	 dato.put("latitudeis", ptIS.getLatitude());
-				 dato.put("longitudeis", ptIS.getLongitude());
-		   	     dato.put("latitudedi", ptDI.getLatitude());
-		   	     dato.put("longitudedi", ptDI.getLongitude());
+	   	    	 dato.put("latitudeis", myArea.getPtIS().getLatitude());
+				 dato.put("longitudeis", myArea.getPtIS().getLongitude());
+		   	     dato.put("latitudedi", myArea.getPtDI().getLatitude());
+		   	     dato.put("longitudedi", myArea.getPtDI().getLongitude());
 			
 	   	     } catch (JSONException e) {
 				// TODO Auto-generated catch block
