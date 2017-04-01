@@ -1,7 +1,5 @@
 package com.glogApps.glog.models;
 
-import java.util.Date;
-
 import android.text.format.Time;
 
 public class Comment {
@@ -39,5 +37,4 @@ public class Comment {
 	public Comment() {
 		super();
 	}
-
 }
