@@ -1,0 +1,2 @@
+# glog
+Geolocated logs App
