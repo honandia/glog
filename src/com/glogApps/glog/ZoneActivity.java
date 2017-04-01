@@ -11,6 +11,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -303,12 +306,12 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 			{
 				//Construimos el objeto cliente en formato JSON
 			    JSONObject dato = new JSONObject();
+			    		    
+			    comment = new Comment(txtComment.getText().toString(),Utils.ISODateToTime(Utils.getISODatePhone()),"Jaimito");//Utils.getDatePhone()
 			    
-			    comment = new Comment(txtComment.getText().toString(),"","Jaimito");//Utils.getDatePhone()
-			    
-			    dato.put("text", Utils.stringToBinary(comment.text));
-			    dato.put("date", comment.date);		  
-			    dato.put("user_id", comment.user_id);
+			    dato.put("text", Utils.stringToBinary(comment.getText()));
+			    dato.put("date", Utils.getISODatePhone());//comment.getDate());		  
+			    dato.put("user_id", comment.getUser_id());
 			 
 			    StringEntity entity = new StringEntity(dato.toString());
 			    put.setEntity(entity);
@@ -330,6 +333,18 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	        {
 
 	        	comments.add(comment);
+	        	
+	        	
+	        	//ordenamos los resultados por fecha
+	        	Collections.sort(comments, new Comparator<Comment>() {
+
+					@Override
+					public int compare(Comment c1, Comment c2) {
+						
+						return (new Date(c2.getDate().toMillis(true))).compareTo(new Date(c1.getDate().toMillis(true)));
+					}
+	        		
+				});
 	        	
 	        	ArrayAdapterComments adaptador = new ArrayAdapterComments(ZoneActivity.this, comments);
 	        	
@@ -385,7 +400,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	                    date = obj.getString("date");
 	                    user = obj.getString("user_id");
 	                           
-	                    comments.add(new Comment(text,date,user));
+	                    comments.add(new Comment(text,Utils.ISODateToTime(date),user));
 	                }         
 	        }
 	        catch(Exception ex)
@@ -400,9 +415,23 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	 
 	        if (result)
 	        {
-	        	//Rellenamos la lista con los resultados
 	        	
-	        	ArrayAdapterComments adaptador = new ArrayAdapterComments(ZoneActivity.this, comments);
+	        	
+	        	//ordenamos los resultados por fecha
+	        	Collections.sort(comments, new Comparator<Comment>() {
+
+					@Override
+					public int compare(Comment c1, Comment c2) {
+						
+						return (new Date(c2.getDate().toMillis(true))).compareTo(new Date(c1.getDate().toMillis(true)));
+					}
+	        		
+				});
+				
+				
+	        	
+	        	//Rellenamos el adapter con los resultados
+	        	ArrayAdapterComments adaptador = new ArrayAdapterComments(ZoneActivity.this, comments);	        	
 	        	
 	        	lstComments.setAdapter(adaptador);
                
