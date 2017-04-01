@@ -51,6 +51,43 @@
 			android:maxEms="17"
 			android:text="Description" />
 		
+		<TableLayout
+		    android:id="@+id/TableLayout1"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content" >
+		
+		    <LinearLayout
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content" >
+		
+		        <ImageView
+		            android:id="@+id/avatarCommentMB"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:src="@drawable/emo_im_tongue_sticking_out" />
+		
+		        <TextView
+		            android:id="@+id/userCommentMB"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="TextView" />
+		
+		        <TextView
+		            android:id="@+id/dateCommentMB"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_marginLeft="38dp"
+		            android:text="TextView" />
+		    </LinearLayout>
+		
+		    <TextView
+		        android:id="@+id/textCommentMB"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Small Text"
+		        android:textAppearance="?android:attr/textAppearanceSmall" />
+		</TableLayout>
+		
 		<TextView android:id="@+id/bubble_subdescription" 
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

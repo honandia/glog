@@ -24,12 +24,15 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.PathOverlay;
 
 import com.glogApps.glog.emoji.Emoji;
+import com.glogApps.glog.emoji.EmojiView;
 import com.glogApps.glog.maps.Area;
 import com.glogApps.glog.maps.CustomInfoWindow;
 import com.glogApps.glog.maps.MyMarker;
+import com.glogApps.glog.maps.MyMarkerCustomInfoWindow;
 import com.glogApps.glog.maps.OsmGeoUpdateHandler;
 import com.glogApps.glog.models.Comment;
 import com.glogApps.glog.models.Zone;
+import com.glogApps.glog.utils.Utils;
 import com.gordApps.glog.R;
 
 import android.app.Activity;
@@ -52,10 +55,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.osmdroid.views.MapView;
@@ -65,12 +70,6 @@ import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
 public class ActivityPrincipal extends ActionBarActivity {
 
 	    
-	//MapView mapView;
-   // LinearLayout searchPanel;
-    //Button searchButton;
-    //EditText searchText;
-   
-    //public static final int SEARCH_ID = Menu.FIRST;
 
     private MapView myOpenMapView;
     private MapController mapController;
@@ -84,6 +83,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     ArrayList<Marker> markerArray;
     
     Area myArea;
+    public static final int ALCANCE = 1800;
     
     GeoPoint startPoint;
     
@@ -93,6 +93,9 @@ public class ActivityPrincipal extends ActionBarActivity {
     
     Area newZoneArea;
     
+    public static final int MAX_ZONES_IN_AREA = 15;
+    private int zonesInArea;
+    private int zoneIndex;
     
     
     /*GeoPoint ptII;
@@ -101,6 +104,9 @@ public class ActivityPrincipal extends ActionBarActivity {
     GeoPoint ptDS;*/
     
     public ArrayList<Zone> alZones;
+    
+    public static final int DIALOG_LOADING_AREA = 0;
+    
     
     //obtiene el numero de telefono del usuario
     private String getPhoneNumber(){  
@@ -111,13 +117,52 @@ public class ActivityPrincipal extends ActionBarActivity {
     
     
     
+    public void updateAreaPosition(GeoPoint point){
+    	
+    	myOpenMapView.getOverlays().clear();
+    	//Centre map
+        mapController.setCenter(point);	
+	      
+        //alcance 
+        myArea = new Area(ALCANCE, point);        
+        myArea.draw(myOpenMapView, Color.GREEN, this); 
+     
+        //limitar el panning
+        myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
+    
+        zoneIndex=0;//inicializamos 
+        zonesInArea=0;
+        
+        //Obtener y pintar zonas   
+        TareaRAObtenerZonas tarea = new TareaRAObtenerZonas();
+	    tarea.execute();
+	    
+	    //marcador de inicio
+        startMarker = new Marker(myOpenMapView);
+        startMarker.setPosition(point);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
+                   
+        startMarker.setIcon(getResources().getDrawable(R.drawable.emo_im_happy));
+        startMarker.setTitle("Estas aqui!");
+        
+        myOpenMapView.getOverlays().add(startMarker);
+           
+        myOpenMapView.invalidate();//refrescar el mapa
+    	
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
     	 super.onCreate(savedInstanceState);
          setContentView(R.layout.activity_principal);
     	
-        //obtener el telefono
+         
+         //parentActivity = (ActionBarActivity)this;
+         //emojiView = new EmojiView(parentActivity);
+         
+         
+         //obtener el telefono
     	String phone = getPhoneNumber();
     	Toast.makeText(this, phone, Toast.LENGTH_LONG).show();
          
@@ -134,205 +179,44 @@ public class ActivityPrincipal extends ActionBarActivity {
         mUpdateHandler = new OsmGeoUpdateHandler(this);
         Location location = null;
 
-        for (String provider : locationManager.getProviders(true))
+       /* for (String provider : locationManager.getProviders(true))
         {
+        	
             location = locationManager.getLastKnownLocation(provider);
             if (location != null)
             {
                 //location.setLatitude(MAP_DEFAULT_LATITUDE);
                 //location.setLongitude(MAP_DEFAULT_LONGITUDE);
-                locationManager.requestLocationUpdates(provider, 0, 0, mUpdateHandler);
+                locationManager.requestLocationUpdates(provider, 1000, 0, mUpdateHandler);
                 break;
             }
-        }
+        }*/
+        
+        // solo para provider = GPS
+        
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         
         startPoint = new GeoPoint(43.38110, -3.21863);
-             //  if(location != null){
-             // 	 startPoint = new GeoPoint(location);
-             //  } 			
+               
+        if(location != null){
+              	 startPoint = new GeoPoint(location);
+               }
+               
+		//Dibujar
+        myOpenMapView = (MapView)findViewById(R.id.mapView);
+		myOpenMapView.setBuiltInZoomControls(false);	
+		   
+		//Pintar area
+		mapController = (MapController) myOpenMapView.getController();
+		mapController.setZoom(18);
+           
+    	updateAreaPosition(startPoint);
     	
-    	
-   /* 	 locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);  
-         //for demo, getLastKnownLocation from GPS only, not from NETWORK
-         Location lastLocation 
-          = locationManager.getLastKnownLocation(
-            LocationManager.GPS_PROVIDER);
-         */
-         
-  //       GeoPoint startPoint = new GeoPoint(43.38110, -3.21863);
-  /*       if(lastLocation != null){
-        	 startPoint = new GeoPoint(lastLocation);
-         }*/ 			
-    		//Obtener el area
-    		//Obtener las zonas dentro del area
-    	
-    	//Dibujar
-	    	 myOpenMapView = (MapView)findViewById(R.id.mapView);
-	         myOpenMapView.setBuiltInZoomControls(false);	
-	         
-	       //Pintar area
-	         mapController = (MapController) myOpenMapView.getController();
-	         mapController.setZoom(18);	 
-	         
-	       //Centre map
-	         mapController.setCenter(startPoint);	
-    	
-    		
-	         
-	         
-	         //alcance 1800
-	         myArea = new Area(1800, startPoint);
-	         
-	         myArea.draw(myOpenMapView, Color.GREEN, this);
-	         
-	         //Determinar el area de acción
-	         
-	         //int alcance=1500;
-	         //int alcance=1800;
-	         
-	          //ptII= new GeoPoint(startPoint.getLatitudeE6()+alcance, startPoint.getLongitudeE6()-alcance);
-	          
-	          //ptIS= new GeoPoint(startPoint.getLatitudeE6()-alcance, startPoint.getLongitudeE6()-alcance);
-	          
-	          //ptDI= new GeoPoint(startPoint.getLatitudeE6()+alcance, startPoint.getLongitudeE6()+alcance);
-	          
-	          //ptDS= new GeoPoint(startPoint.getLatitudeE6()-alcance, startPoint.getLongitudeE6()+alcance);
-	          
-	          
-		         
-	         //limitar el panning
-	         BoundingBoxE6 bbox = new BoundingBoxE6(myArea.getPtII().getLatitudeE6(),
-						myArea.getPtDS().getLatitudeE6(), 
-						myArea.getPtII().getLongitudeE6(), 
-						myArea.getPtDS().getLongitudeE6());
-	         /*BoundingBoxE6 bbox = new BoundingBoxE6(ptII.getLatitudeE6(),
-	        		 								ptDS.getLatitudeE6(), 
-	        		 								ptII.getLongitudeE6(), 
-	        		 								ptDS.getLongitudeE6());*/
-	    	 
-	         
-	         myOpenMapView.setScrollableAreaLimit(myOpenMapView.getBoundingBox());
-	         
-	         
-	         //dibujar area de acción
-	        // PathOverlay myOverlay= new PathOverlay(Color.GREEN, this);
-	         //myOverlay.getPaint().setStyle(Style.FILL);
-	         //myOverlay.getPaint().setAlpha(128);
-
-	         //myOverlay.addPoint(ptII);
-	         //myOverlay.addPoint(ptDI);
-	         //myOverlay.addPoint(ptDS);
-	         //myOverlay.addPoint(ptIS);
-
-	         //myOpenMapView.getOverlays().add(myOverlay);
-	         
-	    
-	         //*********************************
-	         
-	         
-	         
-	         startMarker = new Marker(myOpenMapView);
-	         startMarker.setPosition(startPoint);
-	         startMarker.setAnchor(Marker.ANCHOR_CENTER, 1.0f);
-	         
-	            
-	         startMarker.setIcon(getResources().getDrawable(R.drawable.emo_im_happy));
-	         startMarker.setTitle("Estas aqui!");
-	         
-	         myOpenMapView.getOverlays().add(startMarker);
-	         
-	         //startMarker.setAlpha((float)0.5);
-	         //startMarker.setSubDescription("Nombre de la zona");
-	            
-	         myOpenMapView.invalidate();//refrescar el mapa	
-	          
-	          
-	          //Obtener y pintar zonas
-	         
-	         
-	         TareaRAObtenerZonas tarea = new TareaRAObtenerZonas();
-	 	     tarea.execute();
-	 	    
-	 	    
-	         //pruebas pintando zonas ...
-	    /*     overlayItemArray = new ArrayList<OverlayItem>();        
-	         OverlayItem olItem = new OverlayItem("Zona", "holaaaaaaaaaaaa", new GeoPoint(43.38210, -3.21893));       
-	         olItem.setMarker(getResources().getDrawable(R.drawable.ic_launcher));
-	         
-	         overlayItemArray.add(olItem);
-	         
-	         olItem = new OverlayItem("Hola", "prueba", new GeoPoint(43.38010, -3.21893));
-	         olItem.setMarker(getResources().getDrawable(R.drawable.ic_launcher));
-	         overlayItemArray.add(olItem);
-	         
-	         overlayItemArray.add(olItem);
-	         overlayItemArray.add(new OverlayItem("Hola", "Zona de prueba", new GeoPoint(43.38010, -3.21793)));   
-	         overlayItemArray.add(olItem);
-	         overlayItemArray.add(new OverlayItem("hey", "probando...", new GeoPoint(43.38210, -3.21793)));
-	        
-	         
-	         DefaultResourceProxyImpl defaultResourceProxyImpl = new DefaultResourceProxyImpl(this);
-	         ItemizedIconOverlay<OverlayItem> myItemizedIconOverlay  = new ItemizedIconOverlay<OverlayItem>(overlayItemArray, null, defaultResourceProxyImpl);
-	         
-	         MyOwnItemizedOverlay overlay = new MyOwnItemizedOverlay(this, overlayItemArray);
-	         
-	         
-	         myOpenMapView.getOverlays().add(overlay);  */
-         
-	     
-
-
-	         
-	         
-	        
-    	
+	 	     
     	//Eventos
     		//Al hacer click en alguna de las zonas disponibles se accederá al log correspondiente
-    	
-           
-            
-            //searchPanel = (LinearLayout) findViewById(R.id.searchPanel);
-            //searchButton = (Button) findViewById(R.id.searchButton);
-           // searchText = (EditText) findViewById(R.id.searchText);
-            
-           
-            
-            
-          /*  searchButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    String searchFor = searchText.getText().toString();
-                    JSONArray results = searchLocation(searchFor);
 
-                    if (results.length() > 0) {
-                        try {
-                            JSONObject firstResult = (JSONObject)results.get(0);
-                            Double lat = firstResult.getDouble("lat");
-                            Double lon = firstResult.getDouble("lon");
-                            
-                            GeoPoint point = new GeoPoint((int) (lat * 1E6),
-                                                          (int) (lon * 1E6));
-                            mapController.setZoom(15);
-                            mapController.setCenter(point);
-
-                            hideSearchPanel();
-
-                           // mapView.invalidate();
-
-                        } catch (JSONException e) {
-                            Log.e("OnClickListener", e.getMessage());
-                        }
-                    } else {
-                        Toast.makeText(view.getContext(), 
-                                       "No results found", 
-                                       Toast.LENGTH_SHORT).show();
-                    }
-                    
-                    
-                }
-            });*/
-            //***********************
-            
-            //setContentView(R.layout.activity_principal);
     	}
     
     
@@ -347,55 +231,36 @@ public class ActivityPrincipal extends ActionBarActivity {
     	public boolean onOptionsItemSelected(MenuItem item) {
     	    switch(item.getItemId())
     	    {
-    	        case R.id.menu_settings:
+    	        case R.id.menu_settings://Ajustes
     	            Toast.makeText(this, "Ajustes", Toast.LENGTH_SHORT).show();;
     	            break;
-    	        case R.id.menu_view:
-    	        	
+    	            
+    	        case R.id.menu_view://mostrar la información de cada zona
+  	        	
     	        	//oculta todos los bocadillos
 	        		for (Marker markers : markerArray) {
-	        			markers.hideInfoWindow();
+	        			markers.hideInfoWindow();	
 	        		}
     	        	
-    	        	for (final Marker marker : markerArray) {
-						
-    	        			
-    	        		//********************
-    	        		//********************
-    	        		//**********************
-    	        		
-    	        		
-    	        		mapController.animateTo(marker.getPosition());
-    	        		marker.showInfoWindow();
-    	        		/*try {
-							marker.wait(5000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}*/
-    	        		
-    	        		/*final Handler handler = new Handler();
-    	        		handler.postDelayed(new Runnable() {
-    	        		    @Override
-    	        		    public void run() {
-    	        		        // oculta el bocadillo despues de 5s
-    	        		    	mapController.setCenter(marker.getPosition());
-    	        		    	marker.showInfoWindow();
-    	        		    	//marker.hideInfoWindow();
-    	        		    }
-    	        		}, 5000);*/
-
-					}
+	        		
+    	        	if (zoneIndex < zonesInArea)
+    	        	{
+    	        		mapController.animateTo(markerArray.get(zoneIndex).getPosition());
+    	        		markerArray.get(zoneIndex).showInfoWindow();
+    	        		zoneIndex ++;
+    	        	}
+	        		else
+	        		{
+	        		zoneIndex = 0;
+	        		mapController.animateTo(markerArray.get(zoneIndex).getPosition());
+	        		markerArray.get(zoneIndex).showInfoWindow();
+	        		zoneIndex ++;
+	        		}
     	        	
     	        	break;
-    	        case R.id.menu_zone:
     	        	
-    	        	
-    	        	
-    	        	
-    	            
-    	            
-    	           
+    	        case R.id.menu_zone://Añadir nueva zona
+        
     	           newZoneArea = new Area(300, startPoint);
     	            
     	           newZoneArea.draw(myOpenMapView, Color.RED, myOpenMapView.getContext());
@@ -575,8 +440,12 @@ public class ActivityPrincipal extends ActionBarActivity {
     	            
     	            break;
     	            
-    	            
-    	        case R.id.menu_remid:
+    	        case R.id.menu_refresh://refrescar area
+    	        	
+    	        	//Habria que volver a calcular el startPoint
+    	        	updateAreaPosition(startPoint);
+    	        	break;
+    	        case R.id.menu_remid://acceder a comentarios archivados
     	            Toast.makeText(this, "Archivados", Toast.LENGTH_SHORT).show();
     	            break;
     	        default:
@@ -585,100 +454,17 @@ public class ActivityPrincipal extends ActionBarActivity {
     	 
     	    return true;
     	}
-
-    /*	@Override
-    	public boolean onCreateOptionsMenu(Menu menu) {
-    		// Inflate the menu; this adds items to the action bar if it is present.
-    		
-    		//getMenuInflater().inflate(R.menu.activity_principal, menu);
-    		//return true;
-    		
-    		boolean result = super.onCreateOptionsMenu(menu);
-    	    menu.add(0, SEARCH_ID, 0, "Search");
-    	    return result;
-    	}*/
-
-    	/*@Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            boolean result = super.onOptionsItemSelected(item);
-
-            switch (item.getItemId()) {
-                case SEARCH_ID:
-                    searchPanel.setVisibility(View.VISIBLE);
-                    break;
-            }
-
-            return result;
-        }*/
-    	
-    /*	@Override
-    	public boolean onOptionsItemSelected(MenuItem item) {
-    	    switch(item.getItemId())
-    	    {
-    	        case R.id.action_settings:
-    	            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();;
-    	            break;
-    	      //  case R.id.action_search:
-    	      //      Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
-    	      //      break;
-    	        default:
-    	            return super.onOptionsItemSelected(item);
-    	    }
-    	 
-    	    return true;
-    	}*/
-  /*  	
-    	public JSONArray searchLocation(String query) {
-            JSONArray results = new JSONArray();
-
-            try {
-                query = URLEncoder.encode(query, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                return results;
-            }
-            String url = "http://nominatim.openstreetmap.org/search?";
-            url += "q=" + query;
-            url += "&format=json";
-
-            HttpGet httpGet = new HttpGet(url);
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-
-            try {
-                HttpResponse response = httpClient.execute(httpGet);
-                String content = EntityUtils.toString(response.getEntity(), "utf-8");
-                results = new JSONArray(content);
-
-            } catch (Exception e) {
-                Log.e("searchLocation", 
-                      "Error executing url: " + url + "; " + e.getMessage());
-            }
-
-            return results;
-        }
-    	
-    	public void hideSearchPanel() {
-            InputMethodManager imm =
-                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(
-                 searchText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            searchPanel.setVisibility(View.INVISIBLE);
-        }*/
-    
-
-    	
-    	
-    	
     	
     	//******************
-    	public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    	
     	private ProgressDialog mProgressDialog;
 
     	@Override
     	protected Dialog onCreateDialog(int id) {
     	    switch (id) {
-    	    case DIALOG_DOWNLOAD_PROGRESS:
+    	    case DIALOG_LOADING_AREA:
     	        mProgressDialog = new ProgressDialog(this);
-    	        mProgressDialog.setMessage("Cargando zonas ...");
+    	        mProgressDialog.setMessage("Cargando area ...");
     	        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     	        mProgressDialog.setCancelable(false);
     	        mProgressDialog.show();
@@ -694,7 +480,7 @@ public class ActivityPrincipal extends ActionBarActivity {
    		 @Override
    		    protected void onPreExecute() {
    		        super.onPreExecute();
-   		        showDialog(DIALOG_DOWNLOAD_PROGRESS);
+   		        showDialog(DIALOG_LOADING_AREA);
    		    }
 
 
@@ -816,7 +602,11 @@ public class ActivityPrincipal extends ActionBarActivity {
    	        	MyMarker marker;
    	        	//TextView bubbleDesc;
    	        	
-   	        	for(int i=0; i<alZones.size(); i++)
+   	        	zonesInArea = alZones.size();
+   	        	
+   	        	String lastCommentText="";
+   	        	
+   	        	for(int i=0; i<zonesInArea; i++)
 	                {
    	        			
    	        			//olItem = new OverlayItem(alZones.get(i).name, "Peperepepee", new GeoPoint(alZones.get(i).latitude, alZones.get(i).longitude));
@@ -830,17 +620,38 @@ public class ActivityPrincipal extends ActionBarActivity {
    	        			marker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
    	        			
    	        			
-   	        			/*View item = LayoutInflater.from(myOpenMapView.getContext()).inflate(R.layout.bonuspack_bubble, null);
-   	        			bubbleDesc = (TextView) item.findViewById(R.id.bubble_description);
-   	        			bubbleDesc.setText(alZones.get(i).desc);*/
-   	        			
-   	        			
-   	        			
    	        			marker.setSnippet(alZones.get(i).desc);
    	        			marker.setTitle(alZones.get(i).name);
    	        			//marker.setAlpha((float)0.5);
    	        			
-   	        			marker.setSubDescription(alZones.get(i).lastCommentUser_id + alZones.get(i).lastCommentDate +'\n'+ Emoji.replaceEmoji(alZones.get(i).lastCommentText));
+   	        			
+   	        			
+   	        			lastCommentText = Utils.binaryToString(alZones.get(i).lastCommentText);
+   	        			
+   	        			//http://danielme.com/tip-android-29-layouts-dinamicos-anadir-vistas-programaticamente/
+   	        			
+   	  
+   	        			MyMarkerCustomInfoWindow mInfo = new MyMarkerCustomInfoWindow(myOpenMapView,
+   	        					alZones.get(i).lastCommentUser_id ,
+   	        					lastCommentText,
+   	        					alZones.get(i).lastCommentDate);
+   	        	        	
+   	        	        marker.setInfoWindow(mInfo);
+   	        	        
+   	        	        
+   	        	         
+   	        	        //layout.addView(tableLayout); 
+   	        	        
+   	        	        //marker.sett
+   	        	      
+   	        	        
+   	        			
+   	        			
+   	        			
+   	        			//Emoji.replaceEmoji(alZones.get(i).lastCommentText)
+   	        			
+   	        			//marker.setSubDescription(alZones.get(i).lastCommentUser_id + alZones.get(i).lastCommentDate +'\n'+ Emoji.replaceEmoji(lastCommentText));
+   	        			
    	        			
    	        		
    	        			
@@ -856,27 +667,48 @@ public class ActivityPrincipal extends ActionBarActivity {
 	                }  
    	        	
    	                 
-	       
-	         
-	      /*   DefaultResourceProxyImpl defaultResourceProxyImpl = new DefaultResourceProxyImpl(ActivityPrincipal.this);
-	         ItemizedIconOverlay<OverlayItem> myItemizedIconOverlay  = new ItemizedIconOverlay<OverlayItem>(overlayItemArray, null, defaultResourceProxyImpl);
-	         
-	         MyOwnItemizedOverlay overlay = new MyOwnItemizedOverlay(ActivityPrincipal.this, overlayItemArray);
-	         
-	         
-	         myOpenMapView.getOverlays().add(overlay);*/
    	        	
 	         myOpenMapView.invalidate();
    	    		
 
                   
-                   dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
+                   dismissDialog(DIALOG_LOADING_AREA);
                    
    	        	Toast.makeText(ActivityPrincipal.this,"Zonas obtenidas!", Toast.LENGTH_SHORT).show();
    	        
    	        }
    	    }
    	}
+    	
+    	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		//Proveedor de ubicación,refresco mínimo,metros mínimos, listener
+		//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
+		
+		Location location = null;
+		for (String provider : locationManager.getProviders(true))
+        {
+        	
+            location = locationManager.getLastKnownLocation(provider);
+            if (location != null)
+            {
+                //location.setLatitude(MAP_DEFAULT_LATITUDE);
+                //location.setLongitude(MAP_DEFAULT_LONGITUDE);
+                locationManager.requestLocationUpdates(provider, 1000, 0, mUpdateHandler);
+                break;
+            }
+        }
+		
+	}
+	@Override
+		protected void onPause() {
+			super.onPause();
+			//El GPS consume muchos recursos, mejor pararlo cuando no lo vayamos
+			//a utilizar
+			locationManager.removeUpdates(mUpdateHandler);
+		}
 							
     	
 }

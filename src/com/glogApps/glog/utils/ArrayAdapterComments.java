@@ -47,8 +47,8 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 			
 			//Comment
 			TextView text=(TextView)item.findViewById(R.id.textComment);
-			//text.setText(Emoji.replaceEmoji(arrayComments.get(position).text));
-			text.setText(arrayComments.get(position).text);
+			text.setText(Emoji.replaceEmoji(arrayComments.get(position).text));
+			//text.setText(arrayComments.get(position).text);
 			
 			//Date
 			TextView date=(TextView)item.findViewById(R.id.dateComment);

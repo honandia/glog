@@ -66,25 +66,17 @@ import android.widget.Toast;
 
 public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelativeLayout.SizeNotifierRelativeLayoutDelegate{
 
-	private ListView lstComments;
-	//private String[] comments;
-	
-	
-	
+	private ListView lstComments;	
 	private ArrayList<Comment> comments;
 	
 	private String idZone;
 	private String nameZone;
 	
 	//******************
-	public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+	public static final int DIALOG_LOADING_COMMENTS = 0;
 	public static final int DIALOG_INSERT_COMENT = 1;
 	
 	private ProgressDialog mProgressDialog;
-	
-	//@+id/nameZoneLog
-	//@+id/txtComment
-	//@+id/btnGlog
 	
 	private TextView nameZoneLog;
 	private EditText txtComment;
@@ -105,7 +97,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	@Override
 	protected Dialog onCreateDialog(int id) {
 	    switch (id) {
-	    case DIALOG_DOWNLOAD_PROGRESS:
+	    case DIALOG_LOADING_COMMENTS:
 	        mProgressDialog = new ProgressDialog(this);
 	        mProgressDialog.setMessage("Cargando comentarios ...");
 	        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -146,12 +138,8 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		nameZone = bundle.getString("ZONE_NAME");
 				
 		
-		nameZoneLog = (TextView) findViewById(R.id.nameZoneLog);
-		
-
+		nameZoneLog = (TextView) findViewById(R.id.nameZoneLog);		
 		nameZoneLog.setText(nameZone);
-		
-		//nameZoneLog.setText((CharSequence) nameZoneLog);
 		
 		emojiButton = (ImageView)findViewById(R.id.chat_smile_button);
 		
@@ -161,6 +149,9 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		
 		parentActivity = (ActionBarActivity)this;
 		
+		//*********
+		emojiView = new EmojiView(parentActivity);
+		//**********
 		
 		emojiButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,32 +186,8 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		
         //contentView = findViewById(R.layout.activity_zone);
 		
-		
-		
-		
 		//*************************
 		//Obtener un listado de los comentarios
-
-		
-		
-		
-		
-		
-		
-		
-		
-		/*if (savedInstanceState == null) {
-		    Bundle extras = getIntent().getExtras();
-		    if(extras == null) {
-		    	idZone= null;
-		    } else {
-		    	idZone= extras.getString("STRING_I_NEED");
-		    }
-		} else {
-			idZone= (String) savedInstanceState.getSerializable("ZONE_ID");
-		}*/
-		
-		
 		
 		TareaRAObtenerComentarios tarea = new TareaRAObtenerComentarios();
 	    tarea.execute();
@@ -228,23 +195,23 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	}
 
 	private void createEmojiPopup() {
-        emojiView = new EmojiView(parentActivity);
+        //emojiView = new EmojiView(parentActivity);
         emojiView.setListener(new EmojiView.Listener() {
             public void onBackspace() {
             	txtComment.dispatchKeyEvent(new KeyEvent(0, 67));
             }
 
             public void onEmojiSelected(String paramAnonymousString) {
-               /* int i = txtComment.getSelectionEnd();
+                int i = txtComment.getSelectionEnd();
                 CharSequence localCharSequence = Emoji.replaceEmoji(paramAnonymousString);
                 txtComment.setText(txtComment.getText().insert(i, localCharSequence));
                 int j = i + localCharSequence.length();
-                txtComment.setSelection(j, j);*/
+                txtComment.setSelection(j, j);
             	
-            	int i = txtComment.getSelectionEnd();
+            	/*int i = txtComment.getSelectionEnd();
             	txtComment.setText(txtComment.getText().insert(i, paramAnonymousString));
                 int j = i + paramAnonymousString.length();
-                txtComment.setSelection(j, j);
+                txtComment.setSelection(j, j);*/
             }
         });
         emojiPopup = new PopupWindow(emojiView);
@@ -318,13 +285,10 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		        showDialog(DIALOG_INSERT_COMENT);
 		    }
 
-
 		    protected void onProgressUpdate(String... progress) {        
 		    mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 		    }
-		
-		
-		
+
 		protected Boolean doInBackground(String... params) {
 	 		
 			boolean resul = true;
@@ -332,36 +296,25 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 			HttpClient httpClient = new DefaultHttpClient();
 			 
 			HttpPut put = new HttpPut("http://restapiglog.herokuapp.com/zone/"+idZone+"/comment");
-			//HttpPut put = new HttpPut("http://localhost:3000/zone/"+idZone+"/comment");
 			
 			put.setHeader("content-type", "application/json");
 			 
 			try
 			{
-			
-				
 				//Construimos el objeto cliente en formato JSON
 			    JSONObject dato = new JSONObject();
-			 
-			    //comment = new Comment(Emoji.replaceEmoji(txtComment.getText().toString()).toString(),Utils.getDatePhone(),"Jaimito");
-			    comment = new Comment(txtComment.getText().toString(),Utils.getDatePhone(),"Jaimito");
 			    
-			    //*************************************************
+			    comment = new Comment(txtComment.getText().toString(),"","Jaimito");//Utils.getDatePhone()
 			    
-			    
-			    //*************************************************
-			    dato.put("text", comment.text);
+			    dato.put("text", Utils.stringToBinary(comment.text));
 			    dato.put("date", comment.date);		  
 			    dato.put("user_id", comment.user_id);
 			 
 			    StringEntity entity = new StringEntity(dato.toString());
 			    put.setEntity(entity);
 			 
-			        HttpResponse resp = httpClient.execute(put);
-			        String respStr = EntityUtils.toString(resp.getEntity());
-			 
-			   //     if(respStr.equals("true"))
-			  //          lblResultado.setText("Actualizado OK.");
+			    HttpResponse resp = httpClient.execute(put);
+
 			}
 			catch(Exception ex)
 			{
@@ -396,7 +349,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		@Override
 		    protected void onPreExecute() {
 		        super.onPreExecute();
-		        showDialog(DIALOG_DOWNLOAD_PROGRESS);
+		        showDialog(DIALOG_LOADING_COMMENTS);
 		    }
 
 
@@ -404,106 +357,35 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		    mProgressDialog.setProgress(Integer.parseInt(progress[0]));
 		    }
 		
-		
-		
 		protected Boolean doInBackground(String... params) {
 	 		
 			boolean resul = true;
 	 
 	        HttpClient httpClient = new DefaultHttpClient();
 	        
-	        HttpGet del = new HttpGet("http://restapiglog.herokuapp.com/commentsinzone/"+idZone);
-	        //HttpGet del = new HttpGet("http://localhost:3000/commentsinzone/"+idZone);
+	        HttpGet get = new HttpGet("http://restapiglog.herokuapp.com/commentsinzone/"+idZone);
 	         
-	        del.setHeader("content-type", "application/json");
+	        get.setHeader("content-type", "application/json");
 	         
 	        try
 	        {
-	                HttpResponse resp = httpClient.execute(del);
+	                HttpResponse resp = httpClient.execute(get);
 	                String respStr = EntityUtils.toString(resp.getEntity());
 	         
 	                JSONArray respJSON = new JSONArray(respStr);
 	         
-	    //            comments = new String[respJSON.length()];
 	                comments = new ArrayList<Comment>();
-	         
-	                
-	                JSONArray binaryText = null;
-	                byte[] bArr;
-	                
+              
 	                String text ="",date,user;
 	                
 	                for(int i=0; i<respJSON.length(); i++)
 	                {
 	                    JSONObject obj = respJSON.getJSONObject(i);
-	         
-	                    //String text = obj.getString("text");
-	                    
-	                    
-	                    binaryText = new JSONArray(obj.getString("text"));
-	                    
-	                    bArr = new byte[binaryText.length()];
-	                    for (int j = 0; j < binaryText.length(); j++) {
-	                        bArr[j] = (byte) binaryText.getInt(j);
-	                    }
-	                    
-	                    
-	                    
-	                    /*byte[] source = ...;
-	                    ByteArrayInputStream bis = new ByteArrayInputStream(source);
-	                    // read bytes from bis ...
-
-	                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	                    // write bytes to bos ...
-	                    byte[] sink = bos.toByteArray();*/
-	                    
-	                    ByteArrayInputStream bis = new ByteArrayInputStream(bArr);
-	                    
-	                    
-	                   /*InputStream iS = new InputStream() {
-						@Override
-						public int read() throws IOException {
-							// TODO Auto-generated method stub
-							return 0;
-						}
-	                   };
-	                   iS.read(bArr);*/
-	                   
-
-	                    
-	                    BufferedReader br = null;
-						StringBuilder sb = new StringBuilder();
-
-						String line;
-						try {
-
-							br = new BufferedReader(new InputStreamReader(bis));
-							while ((line = br.readLine()) != null) {
-								sb.append(line);
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
-						} finally {
-							if (br != null) {
-								try {
-									br.close();
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
-						}
-				 
-						text = sb.toString();
-
+	                    text = Utils.binaryToString(obj.getString("text"));
 	                    date = obj.getString("date");
 	                    user = obj.getString("user_id");
-	                    //String date = obj.getString("date");
-	                    //String user = obj.getString("user_id");
-	                    
+	                           
 	                    comments.add(new Comment(text,date,user));
-	                             
-	                 //   comments[i] = "" + text;
-	                    
 	                }         
 	        }
 	        catch(Exception ex)
@@ -520,28 +402,13 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	        {
 	        	//Rellenamos la lista con los resultados
 	        	
-	 //       	lvMascotas=(ListView)findViewById(R.id.listMascotas);
-	 //   		ArrayList<Mascota> arrayMascotas=utilidades.BBDDfake.getMascotas();
-	 //   		ArrayAdapterMascotas adapter=new ArrayAdapterMascotas(this, arrayMascotas);
-	 //   		lvMascotas.setAdapter(adapter);
-	    		
 	        	ArrayAdapterComments adaptador = new ArrayAdapterComments(ZoneActivity.this, comments);
 	        	
-	     /*   	ArrayAdapter<String> adaptador =
-                        new ArrayAdapter<String>(ZoneActivity.this,
-                        android.R.layout.simple_list_item_1, comments);*/
-                        		
-                        		
-                        //		R.layout.comment, comments);
-                
-                //lstComments = (ListView)findViewById(R.id.commentsZoneLog); 
-                
 	        	lstComments.setAdapter(adaptador);
                
-                dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
+                dismissDialog(DIALOG_LOADING_COMMENTS);
                 
 	        	Toast.makeText(ZoneActivity.this,"Listado de comentarios obtenidos", Toast.LENGTH_SHORT).show();
-	        	// lblResultado.setText("Insertado OK.");
 	        }
 	    }
 	}
