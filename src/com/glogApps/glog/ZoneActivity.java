@@ -3,10 +3,13 @@ package com.glogApps.glog;
 
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -232,10 +235,15 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
             }
 
             public void onEmojiSelected(String paramAnonymousString) {
-                int i = txtComment.getSelectionEnd();
+               /* int i = txtComment.getSelectionEnd();
                 CharSequence localCharSequence = Emoji.replaceEmoji(paramAnonymousString);
                 txtComment.setText(txtComment.getText().insert(i, localCharSequence));
                 int j = i + localCharSequence.length();
+                txtComment.setSelection(j, j);*/
+            	
+            	int i = txtComment.getSelectionEnd();
+            	txtComment.setText(txtComment.getText().insert(i, paramAnonymousString));
+                int j = i + paramAnonymousString.length();
                 txtComment.setSelection(j, j);
             }
         });
@@ -324,6 +332,8 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 			HttpClient httpClient = new DefaultHttpClient();
 			 
 			HttpPut put = new HttpPut("http://restapiglog.herokuapp.com/zone/"+idZone+"/comment");
+			//HttpPut put = new HttpPut("http://localhost:3000/zone/"+idZone+"/comment");
+			
 			put.setHeader("content-type", "application/json");
 			 
 			try
@@ -333,8 +343,13 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 				//Construimos el objeto cliente en formato JSON
 			    JSONObject dato = new JSONObject();
 			 
+			    //comment = new Comment(Emoji.replaceEmoji(txtComment.getText().toString()).toString(),Utils.getDatePhone(),"Jaimito");
 			    comment = new Comment(txtComment.getText().toString(),Utils.getDatePhone(),"Jaimito");
 			    
+			    //*************************************************
+			    
+			    
+			    //*************************************************
 			    dato.put("text", comment.text);
 			    dato.put("date", comment.date);		  
 			    dato.put("user_id", comment.user_id);
@@ -378,7 +393,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	
 	private class TareaRAObtenerComentarios extends AsyncTask<String,Integer,Boolean> {
 		 
-		 @Override
+		@Override
 		    protected void onPreExecute() {
 		        super.onPreExecute();
 		        showDialog(DIALOG_DOWNLOAD_PROGRESS);
@@ -398,6 +413,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	        HttpClient httpClient = new DefaultHttpClient();
 	        
 	        HttpGet del = new HttpGet("http://restapiglog.herokuapp.com/commentsinzone/"+idZone);
+	        //HttpGet del = new HttpGet("http://localhost:3000/commentsinzone/"+idZone);
 	         
 	        del.setHeader("content-type", "application/json");
 	         
@@ -411,13 +427,78 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	    //            comments = new String[respJSON.length()];
 	                comments = new ArrayList<Comment>();
 	         
+	                
+	                JSONArray binaryText = null;
+	                byte[] bArr;
+	                
+	                String text ="",date,user;
+	                
 	                for(int i=0; i<respJSON.length(); i++)
 	                {
 	                    JSONObject obj = respJSON.getJSONObject(i);
 	         
-	                    String text = obj.getString("text");
-	                    String date = obj.getString("date");
-	                    String user = obj.getString("user_id");
+	                    //String text = obj.getString("text");
+	                    
+	                    
+	                    binaryText = new JSONArray(obj.getString("text"));
+	                    
+	                    bArr = new byte[binaryText.length()];
+	                    for (int j = 0; j < binaryText.length(); j++) {
+	                        bArr[j] = (byte) binaryText.getInt(j);
+	                    }
+	                    
+	                    
+	                    
+	                    /*byte[] source = ...;
+	                    ByteArrayInputStream bis = new ByteArrayInputStream(source);
+	                    // read bytes from bis ...
+
+	                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	                    // write bytes to bos ...
+	                    byte[] sink = bos.toByteArray();*/
+	                    
+	                    ByteArrayInputStream bis = new ByteArrayInputStream(bArr);
+	                    
+	                    
+	                   /*InputStream iS = new InputStream() {
+						@Override
+						public int read() throws IOException {
+							// TODO Auto-generated method stub
+							return 0;
+						}
+	                   };
+	                   iS.read(bArr);*/
+	                   
+
+	                    
+	                    BufferedReader br = null;
+						StringBuilder sb = new StringBuilder();
+
+						String line;
+						try {
+
+							br = new BufferedReader(new InputStreamReader(bis));
+							while ((line = br.readLine()) != null) {
+								sb.append(line);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							if (br != null) {
+								try {
+									br.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+				 
+						text = sb.toString();
+
+	                    date = obj.getString("date");
+	                    user = obj.getString("user_id");
+	                    //String date = obj.getString("date");
+	                    //String user = obj.getString("user_id");
 	                    
 	                    comments.add(new Comment(text,date,user));
 	                             

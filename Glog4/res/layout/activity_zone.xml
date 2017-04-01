@@ -1,0 +1,89 @@
+<com.glogApps.glog.emoji.SizeNotifierRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/zone_layout">
+
+<!-- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayoutVZone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ZoneActivity" > -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+         <TextView
+             android:id="@+id/nameZoneLog"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/txtComment"
+             android:layout_weight="0.15"
+             android:text="Zona"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+        <ListView
+            android:id="@+id/commentsZoneLog"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4" >
+
+        </ListView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/chat_smile_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignBottom="@+id/txtComment"
+                android:layout_centerVertical="false"
+                android:layout_marginTop="2dp"
+                android:paddingLeft="4dp"
+                android:paddingTop="1dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_msg_panel_smiles" />
+            
+            <EditText
+                android:id="@+id/txtComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="15dp"
+                android:layout_toLeftOf="@+id/btnGlog"
+                android:layout_toRightOf="@id/chat_smile_button"
+                android:layout_weight="0.63"
+                android:ems="10" >
+
+                <requestFocus />
+            </EditText>
+
+            <ImageButton
+                android:id="@+id/btnGlog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:onClick="insertarComentario"
+                android:src="@drawable/ic_launcher" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    
+</com.glogApps.glog.emoji.SizeNotifierRelativeLayout>
+<!-- </RelativeLayout> -->

@@ -1,0 +1,64 @@
+<!-- <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"/>
+</menu>
+ -->
+
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sgoliver="http://schemas.android.com/apk/res-auto" >
+ 
+   <!--   <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_menu_mylocation"/>
+        -->
+    
+    <item
+        android:id="@+id/menu_zone"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_zone"
+   		android:icon="@drawable/ic_menu_add"/>
+    
+    <item
+        android:id="@+id/menu_view"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_settings"
+   		android:icon="@drawable/ic_menu_view"/>
+    
+    <item
+        android:id="@+id/menu_refresh"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_settings"
+   		android:icon="@drawable/ic_menu_refresh"/>
+    
+    <item
+        android:id="@+id/menu_remid"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_remind"
+   		android:icon="@drawable/ic_menu_archive"/>
+    
+    <item
+        android:id="@+id/menu_settings"
+        sgoliver:showAsAction="always"
+        android:title="@string/action_settings"
+   		android:icon="@drawable/ic_menu_manage"/>
+ 
+    
+    
+     
+
+ 
+   <!-- <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        sgoliver:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_search"
+        android:title="@string/action_search"/>
+        -->
+</menu>
