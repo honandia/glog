@@ -17,14 +17,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="24dp"
-        android:layout_toLeftOf="@+id/btnGlog"
+        android:layout_toLeftOf="@+id/btnGlogLogin"
         android:ems="10" >
 
         <requestFocus />
     </EditText>
 
     <ImageButton
-        android:id="@+id/btnGlog"
+        android:id="@+id/btnGlogLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

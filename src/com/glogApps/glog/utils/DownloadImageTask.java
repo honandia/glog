@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	ImageView bmImage;
 
 	public DownloadImageTask(ImageView bmImage) {

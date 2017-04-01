@@ -17,7 +17,9 @@ public class User {
 	private String facebook;
 	private String twitter;
 	private String phone;
+	private String web;
 	
+
 	//getters setters
 	public String getName() {
 		return name;
@@ -60,6 +62,12 @@ public class User {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getWeb() {
+		return web;
+	}
+	public void setWeb(String web) {
+		this.web = web;
 	}
 	
 	//constructors

@@ -10,7 +10,7 @@
     tools:context=".CreateZoneActivity" >
 
     <TextView
-        android:id="@+id/placeNote"
+        android:id="@+id/textGlLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -23,12 +23,12 @@
         android:id="@+id/txtNombreNZ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/placeNote"
-        android:layout_below="@+id/placeNote"
+        android:layout_alignLeft="@+id/textGlLogo"
+        android:layout_below="@+id/textGlLogo"
         android:ems="10" />
 
     <TextView
-        android:id="@+id/textEmail"
+        android:id="@+id/textGLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/txtNombreNZ"
@@ -40,8 +40,8 @@
         android:id="@+id/txtDescNZ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textEmail"
-        android:layout_below="@+id/textEmail"
+        android:layout_alignLeft="@+id/textGLogo"
+        android:layout_below="@+id/textGLogo"
         android:ems="10" />
 
 </RelativeLayout>

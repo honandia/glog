@@ -32,6 +32,7 @@ import com.glogApps.glog.emoji.Emoji;
 import com.glogApps.glog.emoji.EmojiView;
 import com.glogApps.glog.emoji.SizeNotifierRelativeLayout;
 import com.glogApps.glog.models.Comment;
+import com.glogApps.glog.models.User;
 import com.glogApps.glog.utils.ArrayAdapterComments;
 import com.glogApps.glog.utils.Utils;
 import com.gordApps.glog.R;
@@ -79,6 +80,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	private String idZone;
 	private String nameZone;
 	
+	private User usuarioLogueado;
 	//******************
 	public static final int DIALOG_LOADING_COMMENTS = 0;
 	public static final int DIALOG_INSERT_COMENT = 1;
@@ -139,6 +141,9 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_zone);
+		
+		
+		usuarioLogueado = User.getInstance(this);
 		
 		//obtenemos el id de la zona
 		
@@ -323,7 +328,7 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 				//Construimos el objeto cliente en formato JSON
 			    JSONObject dato = new JSONObject();
 			    		    
-			    comment = new Comment(txtComment.getText().toString(),Utils.ISODateToTime(Utils.getISODatePhone()),"chuck");//Utils.getDatePhone()
+			    comment = new Comment(txtComment.getText().toString(),Utils.ISODateToTime(Utils.getISODatePhone()),usuarioLogueado.getName());//Utils.getDatePhone()
 			    
 			    dato.put("text", Utils.stringToBinary(comment.getText()));
 			    dato.put("date", Utils.getISODatePhone());//comment.getDate());		  
