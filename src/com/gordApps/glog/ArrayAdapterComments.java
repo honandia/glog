@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ArrayAdapterComments extends ArrayAdapter<Comment>{
@@ -34,15 +35,21 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 			//Imagen de la mascota
 //			ImageView fotoMascota=(ImageView)item.findViewById(R.id.imgMascota);
 //			fotoMascota.setImageDrawable((utilidades.UtilsImagenes.cargarImagenAssets(contexto, arrayMascotas.get(position).urlImagen)));
-			//Nombre
+			
+			ImageView avatarComment = (ImageView)item.findViewById(R.id.avatarComment);
+		//	avatarComment.setImageDrawable(R.drawable.ic_launcher);
+			
+			//Comment
 			TextView text=(TextView)item.findViewById(R.id.textComment);
 			text.setText(arrayComments.get(position).text);
-			//Descripción
-//			TextView descrip=(TextView)item.findViewById(R.id.txtDescrip);
-//			descrip.setText(arrayMascotas.get(position).descrip);
-			//Edad
-//			TextView edad=(TextView)item.findViewById(R.id.txtEdad);
-//			edad.setText(Integer.toString(arrayMascotas.get(position).edad));
+			
+			//Date
+			TextView date=(TextView)item.findViewById(R.id.dateComment);
+			date.setText(arrayComments.get(position).date.toString());
+			
+			//User
+			TextView user=(TextView)item.findViewById(R.id.userComment);
+			user.setText(arrayComments.get(position).user_id);
 			
 			return item;
 			

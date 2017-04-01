@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayoutVZone"
     android:layout_width="match_parent"
@@ -10,35 +10,57 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ZoneActivity" >
 
-    <TextView
-        android:id="@+id/nameZoneLog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Zona"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <ListView
-        android:id="@+id/commentsZoneLog"
-        android:layout_width="match_parent"
-        android:layout_height="338dp" >
-    </ListView>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/txtComment"
-            android:layout_width="183dp"
-            android:layout_height="96dp"
-            android:ems="10" />
+         <TextView
+             android:id="@+id/nameZoneLog"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/txtComment"
+             android:layout_weight="0.15"
+             android:text="Zona"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+        <ListView
+            android:id="@+id/commentsZoneLog"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4" >
 
-        <ImageButton
-            android:id="@+id/btnGlog"
-            android:layout_width="wrap_content"
+        </ListView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher" />
+            android:layout_weight="1" >
+
+            <EditText
+                android:id="@+id/txtComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_weight="0.63"
+                android:ems="10" >
+
+                <requestFocus />
+            </EditText>
+
+            <ImageButton
+                android:id="@+id/btnGlog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:onClick="insertarComentario"
+                android:src="@drawable/ic_launcher" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

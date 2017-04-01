@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="GlogTheme" parent="@style/_GlogTheme"/>
+
+  <style name="_GlogTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+    <item name="android:editTextStyle">@style/EditTextGlogTheme</item>
+
+    <item name="android:textColorHighlight">#9931da0a</item>
+
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewGlogTheme</item>
+
+    <item name="android:checkboxStyle">@style/CheckBoxGlogTheme</item>
+
+    <item name="android:radioButtonStyle">@style/RadioButtonGlogTheme</item>
+
+    <item name="android:buttonStyle">@style/ButtonGlogTheme</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonGlogTheme</item>
+
+    <item name="android:spinnerStyle">@style/SpinnerGlogTheme</item>
+
+    <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemGlogTheme</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarGlogTheme</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarGlogTheme</item>
+
+    <item name="android:ratingBarStyle">@style/RatingBarGlogTheme</item>
+
+    <item name="android:ratingBarStyleIndicator">@style/RatingBarBigGlogTheme</item>
+
+    <item name="android:ratingBarStyleSmall">@style/RatingBarSmallGlogTheme</item>
+
+    <item name="android:buttonStyleToggle">@style/ToggleGlogTheme</item>
+
+    <item name="android:listViewStyle">@style/ListViewGlogTheme</item>
+
+    <item name="android:listViewWhiteStyle">@style/ListViewGlogTheme.White</item>
+
+    <item name="android:spinnerItemStyle">@style/SpinnerItemGlogTheme</item>
+
+  </style>
+
+</resources>
