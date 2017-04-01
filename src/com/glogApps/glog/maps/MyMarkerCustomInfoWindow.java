@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
+import com.glogApps.glog.utils.Utils;
 import com.gordApps.glog.R;
 
 public class MyMarkerCustomInfoWindow extends MarkerInfoWindow {
@@ -34,7 +35,7 @@ public class MyMarkerCustomInfoWindow extends MarkerInfoWindow {
 			
 			//Date
 			TextView lDate=(TextView)mView.findViewById(R.id.dateCommentMB);
-			lDate.setText(date);
+			lDate.setText(Utils.TimeToTextAgo(Utils.ISODateToTime(date)));
 			
 			//User
 			TextView lUser=(TextView)mView.findViewById(R.id.userCommentMB);

@@ -65,10 +65,36 @@ public class CreateZoneActivity extends ActionBarActivity {
 		newZone.setLastCommentUser_id("");
 		
 		actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setTitle("Crear nuevo gLog");
+	//	actionBar.setDisplayHomeAsUpEnabled(true);
+	//	actionBar.setTitle("Crear nuevo gLog");
 		
-		
+		//ActionBar actionBar = parentActivity.getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setSubtitle(null);
+        //parentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        actionBar.setCustomView(R.layout.settings_do_action_layout);
+        View cancelButton = actionBar.getCustomView().findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+         //       finishFragment();
+            }
+        });
+   //     doneButton = actionBar.getCustomView().findViewById(R.id.done_button);
+   //     doneButton.setOnClickListener(new View.OnClickListener() {
+   //         @Override
+   //         public void onClick(View view) {
+   //             if (firstNameField.getText().length() != 0) {
+   //                 saveName();
+   //                 finishFragment();
+   //             }
+   //         }
+   //     });
+
 		//cancelar
 		/**CREAR TABS**/
     /*    Tab tabCancelar = actionBar.newTab()

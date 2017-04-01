@@ -197,6 +197,11 @@ public class ZoneActivity extends ActionBarActivity implements SizeNotifierRelat
 		sizeNotifierRelativeLayout = (SizeNotifierRelativeLayout)findViewById(R.id.zone_layout);
         sizeNotifierRelativeLayout.delegate = this;
         contentView = sizeNotifierRelativeLayout;
+        
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            Utils.statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
 		
         //contentView = findViewById(R.layout.activity_zone);
 		

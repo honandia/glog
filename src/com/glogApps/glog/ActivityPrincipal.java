@@ -274,11 +274,11 @@ public class ActivityPrincipal extends ActionBarActivity {
      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
      location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //}
-        startPoint = new GeoPoint(45.38110, -3.21863);
+        startPoint = new GeoPoint(43.38110, -3.21863);
                
-     //   if(location != null){
-     //         	 startPoint = new GeoPoint(location);
-   //            }
+    //    if(location != null){
+    //          	 startPoint = new GeoPoint(location);
+    //           }
                
 		//Dibujar
         myOpenMapView = (MapView)findViewById(R.id.mapView);
@@ -318,26 +318,32 @@ public class ActivityPrincipal extends ActionBarActivity {
     	            
     	        case R.id.menu_view://mostrar la información de cada zona
   	        	
-    	        	//oculta todos los bocadillos
-	        		for (Marker markers : markerArray) {
-	        			markers.hideInfoWindow();	
-	        		}
-    	        	
-	        		
-    	        	if (zoneIndex < zonesInArea)
+    	        	if (!markerArray.isEmpty())
     	        	{
-    	        		mapController.animateTo(markerArray.get(zoneIndex).getPosition());
-    	        		markerArray.get(zoneIndex).showInfoWindow();
-    	        		zoneIndex ++;
+	    	        	//oculta todos los bocadillos
+		        		for (Marker markers : markerArray) {
+		        			markers.hideInfoWindow();	
+		        		}
+	    	        	
+		        		
+	    	        	if (zoneIndex < zonesInArea)
+	    	        	{
+	    	        		mapController.animateTo(markerArray.get(zoneIndex).getPosition());
+	    	        		markerArray.get(zoneIndex).showInfoWindow();
+	    	        		zoneIndex ++;
+	    	        	}
+		        		else
+		        		{
+		        		zoneIndex = 0;
+		        		mapController.animateTo(markerArray.get(zoneIndex).getPosition());
+		        		markerArray.get(zoneIndex).showInfoWindow();
+		        		zoneIndex ++;
+		        		}
     	        	}
-	        		else
-	        		{
-	        		zoneIndex = 0;
-	        		mapController.animateTo(markerArray.get(zoneIndex).getPosition());
-	        		markerArray.get(zoneIndex).showInfoWindow();
-	        		zoneIndex ++;
-	        		}
-    	        	
+    	        	else
+    	        	{
+    	        		Toast.makeText(this, "No hay gLogs en esta área", Toast.LENGTH_SHORT).show();
+    	        	}
     	        	break;
     	        	
     	        case R.id.menu_zone://Añadir nueva zona
