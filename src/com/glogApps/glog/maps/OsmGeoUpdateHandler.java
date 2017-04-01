@@ -15,7 +15,7 @@ import android.widget.Toast;
 public class OsmGeoUpdateHandler implements LocationListener
 {
 
-	int precisionOptima=30;//metros
+	int precisionOptima=10;//metros
 	int precisionMinimaRequerida=30;//metros
 	
     private ActivityPrincipal mMapActivity;

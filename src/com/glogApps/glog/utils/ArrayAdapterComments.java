@@ -51,9 +51,11 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 //			ImageView fotoMascota=(ImageView)item.findViewById(R.id.imgMascota);
 //			fotoMascota.setImageDrawable((utilidades.UtilsImagenes.cargarImagenAssets(contexto, arrayMascotas.get(position).urlImagen)));
 			
-			ImageView avatarComment = (ImageView)item.findViewById(R.id.avatarComment);
 		
-			new DownloadImageTask(avatarComment).execute("http://wpc.556e.edgecastcdn.net/80556E/img.news.tops/NE0QIYl0aqek33_1_zzb.jpg");
+		//	ImageView avatarComment = (ImageView)item.findViewById(R.id.avatarComment);
+		// Ralentiza mucho la insercion
+		//	new DownloadImageTask(avatarComment).execute("http://wpc.556e.edgecastcdn.net/80556E/img.news.tops/NE0QIYl0aqek33_1_zzb.jpg");
+		
 			// llamar a la restapi para obtener los link a partir del user
 			
 			//	avatarComment.setImageDrawable(R.drawable.ic_launcher);

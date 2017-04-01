@@ -3,6 +3,7 @@ package com.glogApps.glog;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -47,6 +48,8 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -78,6 +81,9 @@ public class ActivityPrincipal extends ActionBarActivity {
     
     OsmGeoUpdateHandler mUpdateHandler;
     
+    Location location;
+    List<String> lProviders;
+    
     //ArrayList<OverlayItem> overlayItemArray;
     
     ArrayList<Marker> markerArray;
@@ -106,6 +112,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     public ArrayList<Zone> alZones;
     
     public static final int DIALOG_LOADING_AREA = 0;
+    public static final int DIALOG_LOADING_LOCATION = 1;
     
     
     //obtiene el numero de telefono del usuario
@@ -114,8 +121,6 @@ public class ActivityPrincipal extends ActionBarActivity {
     	mTelephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);   
     	return mTelephonyManager.getLine1Number();
     	}
-    
-    
     
     public void updateAreaPosition(GeoPoint point){
     	
@@ -229,7 +234,6 @@ public class ActivityPrincipal extends ActionBarActivity {
          // Cargar fragment de login o de registro
          //**********************************************
          
-         
          //obtener el telefono
     	String phone = getPhoneNumber();
     	Toast.makeText(this, phone, Toast.LENGTH_LONG).show();
@@ -245,7 +249,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     	
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mUpdateHandler = new OsmGeoUpdateHandler(this);
-        Location location = null;
+        //Location location = null;
 
    /*     float precision =100;
         int precisionMinimaRequerida=10;//metros
@@ -274,11 +278,16 @@ public class ActivityPrincipal extends ActionBarActivity {
      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
      location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //}
-        startPoint = new GeoPoint(43.38110, -3.21863);
-               
-    //    if(location != null){
-    //          	 startPoint = new GeoPoint(location);
-    //           }
+    	
+    /*	lProviders = locationManager.getProviders(true);
+    	
+    	TareaRAObtenerUbicacion tarea = new TareaRAObtenerUbicacion();
+    	tarea.execute();*/
+    	
+        startPoint = new GeoPoint(43.38110, -3.21863);          
+        if(location != null){
+              	 startPoint = new GeoPoint(location);
+               }
                
 		//Dibujar
         myOpenMapView = (MapView)findViewById(R.id.mapView);
@@ -376,7 +385,12 @@ public class ActivityPrincipal extends ActionBarActivity {
     	        case R.id.menu_refresh://refrescar area
     	        	
     	        	//Habria que volver a calcular el startPoint
-    	        	updateAreaPosition(startPoint);
+    	        	lProviders = locationManager.getProviders(true);
+    	        	
+    	        	//TareaRAObtenerUbicacion tarea = new TareaRAObtenerUbicacion();
+    	        	//tarea.execute();
+    	        	
+    	        	//updateAreaPosition(startPoint);
     	        	break;
     	        	
     	        case R.id.menu_remid://acceder a comentarios archivados
@@ -403,6 +417,15 @@ public class ActivityPrincipal extends ActionBarActivity {
     	        mProgressDialog.setCancelable(false);
     	        mProgressDialog.show();
     	        return mProgressDialog;
+    	        
+    	    case DIALOG_LOADING_LOCATION:
+    	        mProgressDialog = new ProgressDialog(this);
+    	        mProgressDialog.setMessage("Calculando ubicacion...");
+    	        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    	        mProgressDialog.setCancelable(false);
+    	        mProgressDialog.show();
+    	        return mProgressDialog;
+    	        
     	    default:
     	    return null;
     	    }
@@ -613,6 +636,70 @@ public class ActivityPrincipal extends ActionBarActivity {
    	        }
    	    }
    	}
+    	
+    //****************
+    //****************
+    	private class TareaRAObtenerUbicacion extends AsyncTask<String,Integer,Boolean> {
+      		 
+      		 @Override
+      		    protected void onPreExecute() {
+      		        super.onPreExecute();
+      		        showDialog(DIALOG_LOADING_LOCATION);
+      		    }
+
+
+      		    protected void onProgressUpdate(String... progress) {        
+      		    mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+      		    }
+      		
+      		
+      		
+      		protected Boolean doInBackground(String... params) {
+      	 		
+      			boolean resul = true;
+      	 
+      			location = null;
+
+  		       	float precision =100;
+  		        int precisionMinimaRequerida=10;//metros
+  		        
+  		        while (location == null && (precision>=precisionMinimaRequerida))
+  		        {
+  		        	
+  			        for (String provider : lProviders)
+  			        {
+  			        	
+  			            location = locationManager.getLastKnownLocation(provider);
+  			            precision=location.getAccuracy();
+  			            if (precision<=precisionMinimaRequerida)
+  			            {
+  			                //location.setLatitude(MAP_DEFAULT_LATITUDE);
+  			                //location.setLongitude(MAP_DEFAULT_LONGITUDE);
+  			                locationManager.requestLocationUpdates(provider, 1000, 0, mUpdateHandler);
+  			                break;
+  			            }
+  			        }
+  		        }
+      	 
+      	        return resul;
+      	    }
+      	 
+      	    protected void onPostExecute(Boolean result) {
+      	 
+      	        if (result)
+      	        {
+                     
+      	        	updateAreaPosition(new GeoPoint(location.getLatitude(), location.getLongitude()));
+                      dismissDialog(DIALOG_LOADING_LOCATION);
+                    
+                      
+      	        	//Toast.makeText(ActivityPrincipal.this,"Ubicacion obtenida: Lat: "+location.getLatitude()+" Long: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+      	        
+      	        }
+      	    }
+      	}
+    //****************
+    //****************
     	
     	
 	@Override
