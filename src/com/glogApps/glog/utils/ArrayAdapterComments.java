@@ -2,6 +2,7 @@ package com.glogApps.glog.utils;
 
 import java.util.ArrayList;
 
+import com.glogApps.glog.emoji.Emoji;
 import com.glogApps.glog.models.Comment;
 import com.gordApps.glog.R;
 import com.gordApps.glog.R.id;
@@ -46,6 +47,7 @@ public class ArrayAdapterComments extends ArrayAdapter<Comment>{
 			
 			//Comment
 			TextView text=(TextView)item.findViewById(R.id.textComment);
+			//text.setText(Emoji.replaceEmoji(arrayComments.get(position).text));
 			text.setText(arrayComments.get(position).text);
 			
 			//Date

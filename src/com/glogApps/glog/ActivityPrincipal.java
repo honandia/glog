@@ -23,6 +23,7 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.PathOverlay;
 
+import com.glogApps.glog.emoji.Emoji;
 import com.glogApps.glog.maps.Area;
 import com.glogApps.glog.maps.CustomInfoWindow;
 import com.glogApps.glog.maps.MyMarker;
@@ -146,9 +147,9 @@ public class ActivityPrincipal extends ActionBarActivity {
         }
         
         startPoint = new GeoPoint(43.38110, -3.21863);
-               if(location != null){
-              	 startPoint = new GeoPoint(location);
-               } 			
+             //  if(location != null){
+             // 	 startPoint = new GeoPoint(location);
+             //  } 			
     	
     	
    /* 	 locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);  
@@ -710,6 +711,9 @@ public class ActivityPrincipal extends ActionBarActivity {
    	        HttpClient httpClient = new DefaultHttpClient();
    	        
    	        HttpPost post = new HttpPost("http://restapiglog.herokuapp.com/zonesinarea");
+   	        
+   	     
+   	     //HttpPost post = new HttpPost("http://localhost:3000/zonesinarea");
    	         
    	        post.setHeader("content-type", "application/json");
    	        
@@ -777,6 +781,8 @@ public class ActivityPrincipal extends ActionBarActivity {
    	                    desc = obj.getString("desc");
    	                    id = obj.getString("_id");
    	                    
+   	                    //lastCommentText = obj.getString("lastCommentText");
+   	                    
    	                    lastCommentText = obj.getString("lastCommentText");
    	                    lastCommentDate = obj.getString("lastCommentDate");
    	                    lastCommentUser_id = obj.getString("lastCommentUser_id");
@@ -834,7 +840,7 @@ public class ActivityPrincipal extends ActionBarActivity {
    	        			marker.setTitle(alZones.get(i).name);
    	        			//marker.setAlpha((float)0.5);
    	        			
-   	        			marker.setSubDescription(alZones.get(i).lastCommentUser_id + alZones.get(i).lastCommentDate +'\n'+ alZones.get(i).lastCommentText);
+   	        			marker.setSubDescription(alZones.get(i).lastCommentUser_id + alZones.get(i).lastCommentDate +'\n'+ Emoji.replaceEmoji(alZones.get(i).lastCommentText));
    	        			
    	        		
    	        			
