@@ -36,7 +36,7 @@
         android:src="@drawable/ic_launcher" />
 
     <TextView
-        android:id="@+id/nameZoneLog"
+        android:id="@+id/nameSavedComments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -45,11 +45,11 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ListView
-        android:id="@+id/commentsZoneLog"
+        android:id="@+id/savedCommentsLV"
         android:layout_width="match_parent"
         android:layout_height="338dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/nameZoneLog" >
+        android:layout_below="@+id/nameSavedComments" >
     </ListView>
 
 </RelativeLayout>

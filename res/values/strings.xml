@@ -10,5 +10,7 @@
     <string name="title_activity_create_zone">CreateZoneActivity</string>
     <string name="Cancel">Cancel</string>
     <string name="Done">Done</string>
+    <string name="title_activity_saved_comments">SavedCommentsActivity</string>
+    <string name="title_activity_user">UserActivity</string>
 
 </resources>

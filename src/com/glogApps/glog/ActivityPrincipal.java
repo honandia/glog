@@ -1,9 +1,11 @@
 package com.glogApps.glog;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -43,7 +45,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -70,7 +76,7 @@ import org.osmdroid.views.MapView;
 
 import org.osmdroid.bonuspack.overlays.MarkerInfoWindow;
 
-public class ActivityPrincipal extends ActionBarActivity {
+public class ActivityPrincipal extends ActionBarActivity implements LocationListener{
 
 	    
 
@@ -82,6 +88,8 @@ public class ActivityPrincipal extends ActionBarActivity {
     OsmGeoUpdateHandler mUpdateHandler;
     
     Location location;
+    Location newestLocation;
+    
     List<String> lProviders;
     
     //ArrayList<OverlayItem> overlayItemArray;
@@ -95,7 +103,8 @@ public class ActivityPrincipal extends ActionBarActivity {
     
     Marker startMarker;
     Marker newZoneMarker;
-    CustomInfoWindow newZoneMarkerInfoWindow; 
+    CustomInfoWindow newZoneMarkerInfoWindow;
+    String infoNewZone;
     
     Area newZoneArea;
     
@@ -112,7 +121,8 @@ public class ActivityPrincipal extends ActionBarActivity {
     public ArrayList<Zone> alZones;
     
     public static final int DIALOG_LOADING_AREA = 0;
-    public static final int DIALOG_LOADING_LOCATION = 1;
+    //public static final int DIALOG_LOADING_LOCATION = 1;
+    public static final int DIALOG_INFO_LOCATION = 1;
     
     
     //obtiene el numero de telefono del usuario
@@ -169,15 +179,19 @@ public class ActivityPrincipal extends ActionBarActivity {
         newZoneMarkerInfoWindow.btn.setOnClickListener(new View.OnClickListener() {
         		public void onClick(View view) {
         			 	            			
+        			//obtenemos la información del lugar donde se creará el nuevo gLog
+        			TareaOSMObtenerInfoGLog tarea = new TareaOSMObtenerInfoGLog();
+        			tarea.execute();
+        			
         			//vamos a la activity para la creación del gLog
         			
-        			Intent intent = new Intent(myOpenMapView.getContext(),CreateZoneActivity.class);	
+        		/*	Intent intent = new Intent(myOpenMapView.getContext(),CreateZoneActivity.class);	
         			
         			//pasamos el ID y el nombre de la zona qu vamos a consultar
         			intent.putExtra("LATITUDE_NEW_ZONE", newZoneMarker.getPosition().getLatitude());
         			intent.putExtra("LONGITUDE_NEW_ZONE", newZoneMarker.getPosition().getLongitude());
         		
-        			myOpenMapView.getContext().startActivity(intent);
+        			myOpenMapView.getContext().startActivity(intent);*/
 		
         		}
         		});
@@ -221,6 +235,70 @@ public class ActivityPrincipal extends ActionBarActivity {
         myOpenMapView.getOverlays().add(newZoneMarker);
     }
     
+    public void getCurrentLocation() {
+    	
+    	Criteria criteria = new Criteria();
+    	criteria.setPowerRequirement(Criteria.ACCURACY_HIGH);
+    	
+        List<String> providers = locationManager.getProviders(criteria, true);
+        if (providers.size() > 0) {
+            newestLocation = null;
+            for (String provider : providers) {
+                location = locationManager.getLastKnownLocation(provider);
+                if (location != null) {
+                    if (newestLocation == null) {
+                        newestLocation = location;
+                    } else {
+                        if (location.getTime() > newestLocation.getTime()) {
+                            newestLocation = location;
+                        }
+                    }
+                    locationManager.requestLocationUpdates(provider, 0, 0, this);
+                }
+            }
+        } else {
+            LocationDialogFragment dialog = new LocationDialogFragment();
+            dialog.show(getSupportFragmentManager(),
+                LocationDialogFragment.class.getName());
+        }
+    }
+    
+    @Override
+    public void onLocationChanged(Location location) {
+        float bestAccuracy = -1f;
+        if (location.getAccuracy() != 0.0f
+            && (location.getAccuracy() < bestAccuracy) || bestAccuracy == -1f) {
+            if (location.getAccuracy() < 5f ){//Const.MIN_ACCURACY) {
+                locationManager.removeUpdates(this);
+            }
+        }
+        bestAccuracy = location.getAccuracy();
+    }
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+		LocationDialogFragment dialog = new LocationDialogFragment();
+        dialog.show(getSupportFragmentManager(),
+            LocationDialogFragment.class.getName());
+        
+		//Intent intent=new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		//getApplicationContext().startActivity(intent);
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
@@ -248,7 +326,7 @@ public class ActivityPrincipal extends ActionBarActivity {
     		//Obtener el punto actual de user
     	
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mUpdateHandler = new OsmGeoUpdateHandler(this);
+ //       mUpdateHandler = new OsmGeoUpdateHandler(this);
         //Location location = null;
 
    /*     float precision =100;
@@ -275,8 +353,8 @@ public class ActivityPrincipal extends ActionBarActivity {
         
       //  while (location == null)
      //   {
-     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
-     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
+ //    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //}
     	
     /*	lProviders = locationManager.getProviders(true);
@@ -284,9 +362,11 @@ public class ActivityPrincipal extends ActionBarActivity {
     	TareaRAObtenerUbicacion tarea = new TareaRAObtenerUbicacion();
     	tarea.execute();*/
     	
+    	getCurrentLocation();
+    	
         startPoint = new GeoPoint(43.38110, -3.21863);          
-        if(location != null){
-              	 startPoint = new GeoPoint(location);
+        if(newestLocation != null){
+              	 startPoint = new GeoPoint(newestLocation);
                }
                
 		//Dibujar
@@ -390,11 +470,16 @@ public class ActivityPrincipal extends ActionBarActivity {
     	        	//TareaRAObtenerUbicacion tarea = new TareaRAObtenerUbicacion();
     	        	//tarea.execute();
     	        	
-    	        	//updateAreaPosition(startPoint);
+    	        	updateAreaPosition(startPoint);
     	        	break;
     	        	
     	        case R.id.menu_remid://acceder a comentarios archivados
-    	            Toast.makeText(this, "Archivados", Toast.LENGTH_SHORT).show();
+    	        	
+    	        	
+    	        	Intent intent = new Intent(myOpenMapView.getContext(),SavedCommentsActivity.class);	
+    	        	myOpenMapView.getContext().startActivity(intent);
+    	            
+    	        	Toast.makeText(this, "Archivados", Toast.LENGTH_SHORT).show();
     	            break;
     	        default:
     	            return super.onOptionsItemSelected(item);
@@ -418,15 +503,26 @@ public class ActivityPrincipal extends ActionBarActivity {
     	        mProgressDialog.show();
     	        return mProgressDialog;
     	        
-    	    case DIALOG_LOADING_LOCATION:
+    	 /*   case DIALOG_LOADING_LOCATION:
     	        mProgressDialog = new ProgressDialog(this);
     	        mProgressDialog.setMessage("Calculando ubicacion...");
+    	        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    	        mProgressDialog.setCancelable(false);
+    	        mProgressDialog.show();
+    	        return mProgressDialog;*/
+    	        
+    	    
+    	    	
+    	    case DIALOG_INFO_LOCATION:
+    	        mProgressDialog = new ProgressDialog(this);
+    	        mProgressDialog.setMessage("Obteniendo información de este punto...");
     	        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     	        mProgressDialog.setCancelable(false);
     	        mProgressDialog.show();
     	        return mProgressDialog;
     	        
     	    default:
+    	    	
     	    return null;
     	    }
     	}
@@ -450,8 +546,8 @@ public class ActivityPrincipal extends ActionBarActivity {
    		protected Boolean doInBackground(String... params) {
    	 		
    			boolean resul = true;
-   	 
-   	        HttpClient httpClient = new DefaultHttpClient();
+   			
+   			HttpClient httpClient = new DefaultHttpClient();
    	        
    	        HttpPost post = new HttpPost("http://restapiglog.herokuapp.com/zonesinarea");
    	        
@@ -639,12 +735,31 @@ public class ActivityPrincipal extends ActionBarActivity {
     	
     //****************
     //****************
-    	private class TareaRAObtenerUbicacion extends AsyncTask<String,Integer,Boolean> {
+    	/*
+		Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
+		StringBuilder builder = new StringBuilder();
+		try {
+		    List<Address> address = geoCoder.getFromLocation(newZone.getLatitude(), newZone.getLongitude(), 1);
+		    int maxLines = address.get(0).getMaxAddressLineIndex();
+		    for (int i=0; i<maxLines; i++) {
+		    String addressStr = address.get(0).getAddressLine(i);
+		    builder.append(addressStr);
+		    builder.append(" ");
+		    }
+
+		City = builder.toString(); //This is the complete address.
+		} catch (IOException e) {
+			
+		}
+		  catch (NullPointerException e) {}
+		  */
+    //****************
+    	private class TareaOSMObtenerInfoGLog extends AsyncTask<String,Integer,Boolean> {
       		 
       		 @Override
       		    protected void onPreExecute() {
       		        super.onPreExecute();
-      		        showDialog(DIALOG_LOADING_LOCATION);
+      		        showDialog(DIALOG_INFO_LOCATION);
       		    }
 
 
@@ -657,29 +772,44 @@ public class ActivityPrincipal extends ActionBarActivity {
       		protected Boolean doInBackground(String... params) {
       	 		
       			boolean resul = true;
-      	 
-      			location = null;
-
-  		       	float precision =100;
-  		        int precisionMinimaRequerida=10;//metros
-  		        
-  		        while (location == null && (precision>=precisionMinimaRequerida))
-  		        {
-  		        	
-  			        for (String provider : lProviders)
-  			        {
-  			        	
-  			            location = locationManager.getLastKnownLocation(provider);
-  			            precision=location.getAccuracy();
-  			            if (precision<=precisionMinimaRequerida)
-  			            {
-  			                //location.setLatitude(MAP_DEFAULT_LATITUDE);
-  			                //location.setLongitude(MAP_DEFAULT_LONGITUDE);
-  			                locationManager.requestLocationUpdates(provider, 1000, 0, mUpdateHandler);
-  			                break;
-  			            }
-  			        }
-  		        }
+      			
+      			final String requestString = "http://nominatim.openstreetmap.org/reverse?format=json&lat=" +
+      	                Double.toString(newZoneMarker.getPosition().getLatitude()) + "&lon=" + Double.toString(newZoneMarker.getPosition().getLongitude()) + "&zoom=18&addressdetails=1";  
+      			HttpClient httpClient = new DefaultHttpClient();
+      	        
+      	        HttpGet get = new HttpGet(requestString); 
+      	         
+      	        //post.setHeader("content-type", "application/json");
+      	             
+      	        try
+      	        {
+      	                HttpResponse resp = httpClient.execute(get);
+      	                String respStr = EntityUtils.toString(resp.getEntity());
+      	         
+      	                JSONObject obj = new JSONObject(respStr);    
+       	                
+      	                
+      	              
+	      	            if (obj.has("display_name"))
+	      	            	infoNewZone = obj.getString("display_name");
+	  	                else
+	  	                	infoNewZone = "";
+      	              
+      	                /*if(obj.has("address"))
+      	                	city = obj.getJSONObject("address").getString("town");
+      	                else if (obj.has("city"))
+      	                	city = obj.getString("city");
+      	                else
+      	                	city = "";*/
+       	                
+       	                    
+       	                    
+       	                
+      	        }
+      	        catch(Exception ex)
+      	        {
+      	                Log.e("ServicioRest","Error!", ex);
+      	        }
       	 
       	        return resul;
       	    }
@@ -688,17 +818,26 @@ public class ActivityPrincipal extends ActionBarActivity {
       	 
       	        if (result)
       	        {
+
                      
-      	        	updateAreaPosition(new GeoPoint(location.getLatitude(), location.getLongitude()));
-                      dismissDialog(DIALOG_LOADING_LOCATION);
-                    
+                      dismissDialog(DIALOG_INFO_LOCATION);
                       
-      	        	//Toast.makeText(ActivityPrincipal.this,"Ubicacion obtenida: Lat: "+location.getLatitude()+" Long: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+                      Intent intent = new Intent(myOpenMapView.getContext(),CreateZoneActivity.class);	
+          			
+          			  //pasamos el ID y el nombre de la zona qu vamos a consultar
+          				intent.putExtra("LATITUDE_NEW_ZONE", newZoneMarker.getPosition().getLatitude());
+          				intent.putExtra("LONGITUDE_NEW_ZONE", newZoneMarker.getPosition().getLongitude());
+          				
+          				intent.putExtra("INFO_NEW_ZONE", infoNewZone);
+          		
+          				myOpenMapView.getContext().startActivity(intent);
+                      
+          				//Toast.makeText(ActivityPrincipal.this,"Info ontenida! "+city, Toast.LENGTH_SHORT).show();
       	        
       	        }
       	    }
       	}
-    //****************
+    	
     //****************
     	
     	
@@ -708,7 +847,7 @@ public class ActivityPrincipal extends ActionBarActivity {
 		//Proveedor de ubicación,refresco mínimo,metros mínimos, listener
 		//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mUpdateHandler);
 		
-		Location location = null;
+/*		Location location = null;
 		for (String provider : locationManager.getProviders(true))
         {
         	
@@ -720,7 +859,7 @@ public class ActivityPrincipal extends ActionBarActivity {
                 locationManager.requestLocationUpdates(provider, 1000, 0, mUpdateHandler);
                 break;
             }
-        }
+        }*/
 		
 	}
 	@Override
@@ -728,8 +867,10 @@ public class ActivityPrincipal extends ActionBarActivity {
 			super.onPause();
 			//El GPS consume muchos recursos, mejor pararlo cuando no lo vayamos
 			//a utilizar
-			locationManager.removeUpdates(mUpdateHandler);
+	//		locationManager.removeUpdates(mUpdateHandler);
 		}
+
+
 							
     	
 }

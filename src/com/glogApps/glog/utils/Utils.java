@@ -12,6 +12,9 @@ import org.json.JSONException;
 
 import com.glogApps.glog.ApplicationLoader;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.text.format.Time;
 
@@ -207,6 +210,7 @@ public class Utils {
 		}		
 		return sb.toString();
 	}
+	
 
 }
 

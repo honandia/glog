@@ -14,7 +14,12 @@ public class NotasDataSource {
 	private SQLiteDatabase db;
 	private MySQLiteOpenHelper dbHelper;
 	private String[] columnas = { TablaNotas.COLUMNA_ID,
-			TablaNotas.COLUMNA_TEXTO };
+			TablaNotas.COLUMNA_TEXTO, 
+			TablaNotas.COLUMNA_USER, 
+			TablaNotas.COLUMNA_DATE, 
+			TablaNotas.COLUMNA_GLOG,
+			TablaNotas.COLUMNA_DESCGLOG,
+			TablaNotas.COLUMNA_PLACEGLOG};
 
 	public NotasDataSource(Context context) {
 		dbHelper = MySQLiteOpenHelper.getInstance(context);
@@ -28,14 +33,19 @@ public class NotasDataSource {
 		dbHelper.close();
 	}
 
-	public void crearNota(String nota) {
+	public void crearNota(Nota nota) {
 		ContentValues values = new ContentValues();
-		values.put(TablaNotas.COLUMNA_TEXTO, nota);
+		values.put(TablaNotas.COLUMNA_TEXTO, nota.gettexto());
+		values.put(TablaNotas.COLUMNA_USER, nota.getUser());
+		values.put(TablaNotas.COLUMNA_DATE, nota.getDate());
+		values.put(TablaNotas.COLUMNA_GLOG, nota.getgLog());
+		values.put(TablaNotas.COLUMNA_DESCGLOG, nota.getDescGLog());
+		values.put(TablaNotas.COLUMNA_PLACEGLOG, nota.getPlaceGLog());
 		db.insert(TablaNotas.TABLA_NOTAS, null, values);
 	}
 
-	public List<Nota> getAllNotas() {
-		List<Nota> listaNotas = new ArrayList<Nota>();
+	public ArrayList<Nota> getAllNotas() {
+		ArrayList<Nota> listaNotas = new ArrayList<Nota>();
 
 		Cursor cursor = db.query(TablaNotas.TABLA_NOTAS, columnas, null, null,
 				null, null, null);
@@ -60,6 +70,11 @@ public class NotasDataSource {
 		Nota nota = new Nota();
 		nota.setId(cursor.getLong(0));
 		nota.setTexto(cursor.getString(1));
+		nota.setUser(cursor.getString(2));
+		nota.setDate(cursor.getString(3));
+		nota.setgLog(cursor.getString(4));
+		nota.setDescGLog(cursor.getString(5));
+		nota.setPlaceGLog(cursor.getString(6));
 		return nota;
 	}
 }

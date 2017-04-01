@@ -2,25 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_fondo"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".CreateZoneActivity" >
 
-    <Button
-        android:id="@+id/btnNewZone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="18dp"
-        android:layout_marginLeft="101dp"
-        android:onClick="crearNuevaZona"
-        android:text="Button" />
-
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/placeNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -33,12 +23,12 @@
         android:id="@+id/txtNombreNZ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
+        android:layout_alignLeft="@+id/placeNote"
+        android:layout_below="@+id/placeNote"
         android:ems="10" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/txtNombreNZ"
@@ -50,8 +40,8 @@
         android:id="@+id/txtDescNZ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/textEmail"
+        android:layout_below="@+id/textEmail"
         android:ems="10" />
 
 </RelativeLayout>
